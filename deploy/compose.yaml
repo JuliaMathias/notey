@@ -1,0 +1,56 @@
+name: notey
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: notey
+      POSTGRES_DB: notey
+      POSTGRES_PASSWORD: ${NOTEY_DB_PASSWORD:?Set a private database password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [database]
+    mem_limit: 512m
+    cpus: 1
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notey -d notey"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  web:
+    image: ${NOTEY_IMAGE:?Set the tested revision image}
+    restart: unless-stopped
+    init: true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PHX_SERVER: 'true'
+      PHX_HOST: ${PHX_HOST:?Set Lara's verified hostname}
+      PHX_PORT: ${PHX_PORT:-8443}
+      PORT: '4000'
+      DATABASE_URL: ecto://notey:${NOTEY_DB_PASSWORD}@db/notey
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:?Set a private signing secret}
+      POOL_SIZE: '5'
+      RELEASE_COOKIE: ${RELEASE_COOKIE:?Set a private release cookie}
+      ERL_FLAGS: '+S 2:2'
+      NOTEY_REVISION: ${NOTEY_REVISION:?Set the deployed source revision}
+    networks:
+      database:
+      proxy:
+        aliases: [notey-web]
+    mem_limit: 512m
+    cpus: 1
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:4000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:
+networks:
+  database:
+    internal: true
+  proxy:
+    external: true
+    name: lara-proxy
