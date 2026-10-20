@@ -4,7 +4,7 @@ GitHub [Project 8](https://github.com/users/JuliaMathias/projects/8) and its iss
 
 ## N01 — Foundation in progress
 
-Branch: `codex/issue-1-project-foundation`. Issue: [notey#1](https://github.com/JuliaMathias/notey/issues/1). Companion ingress: [home-server-infra#11](https://github.com/JuliaMathias/home-server-infra/issues/11).
+Branch: `codex/issue-1-project-foundation`. Application [PR #26](https://github.com/JuliaMathias/notey/pull/26). Issue: [notey#1](https://github.com/JuliaMathias/notey/issues/1). Companion ingress: [home-server-infra#11](https://github.com/JuliaMathias/home-server-infra/issues/11).
 
 Implemented locally: pinned Phoenix/LiveView/PostgreSQL scaffold; UUID schema/migration defaults; real persistence page; readiness endpoint; development database; production release/Docker/Compose recipes; CI; working/setup/testing guidance. No session or AI feature is claimed.
 
@@ -20,20 +20,24 @@ Evidence on 2026-10-20:
 | Native Mac Docker image build | Passed, `notey:foundation-review`; not an amd64 Lara deployment |
 | Local HTTP `/health` | Passed |
 | Production Compose activation / release migration / container readiness | Passed locally with synthetic private test env |
-| Real browser interaction | Pending: in-app browser tooling timed out; LiveView automated test is separate evidence |
-| Latest PR CI | Pending publication |
-| Signed commits / PR review | Planning commit `89418db` signed and verified; foundation PR pending |
+| Real local browser interaction | Passed after resetting browser tools: in-app Chromium save/reload preserved UUID; server confirmed WebSocket transport |
+| Local responsive/keyboard inspection | Passed at 1280x720 and 390x844; narrow page width equals viewport (390px), button reachable by Tab; physical phone remains pending |
+| PR CI | Passed on foundation `ae80102` (1m33s); latest head must also pass before handoff, with results recorded in PR/issue |
+| Signed commits / PR review | Signed planning `89418db` and foundation `ae80102` pushed; PR #26 open for user review |
 | Lara app deployment / exact revision and image | Pending |
 | Caddy route and preserved existing route | Pending separate infrastructure PR and user merge |
 | Laptop HTTPS/WebSocket through Tailscale | Pending |
 | Phone over cellular/Tailscale | Pending user device check |
-| Deployed restart/persistence | Pending |
+| Production-container restart/persistence on Mac | Passed: saved UUID survived dedicated app/database restart; not Lara acceptance |
+| Deployed restart/persistence on Lara | Pending |
 
 N01 is not accepted or complete while these deployment/device gates remain. Leave its issue open even if a code PR is ready. Never use a closing keyword to prematurely erase these gates. The exact manual procedure is in [testing.md](testing.md); release operations are in [deployment.md](deployment.md).
 
+The PR explicitly references #1. A Development closing association is intentionally pending: GitHub closes linked issues on merge, but #1 must stay open through deployment/device acceptance. See [GitHub linking behavior](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue). Both PRs are on Project 8 and attached to this chat. This is a documented remaining workflow limitation, not a claimed Development association.
+
 At the end of task 1, **remind Julia to start a new chat** with this document, product/architecture docs and the current issue/PR links as the handoff. A quiet completion reminder is also attached to this chat.
 
-Infrastructure companion prepared in a separate worktree: commit `5283d97`, Compose/Caddy validation passed, no live routing switch.
+Infrastructure companion [PR #12](https://github.com/JuliaMathias/home-server-infra/pull/12) prepared in a separate worktree: commit `5283d97`, Compose/Caddy validation passed, no live routing switch.
 
 ## Published sequence
 

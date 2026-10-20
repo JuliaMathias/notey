@@ -6,7 +6,7 @@ A personal study workspace combining recordings, personal notes, slides and veri
 
 Task [N01 / #1](https://github.com/JuliaMathias/notey/issues/1) establishes the foundation. The app currently has a minimal LiveView page that persists a synthetic UUID record in PostgreSQL, plus a database readiness endpoint. Session uploads, AI processing, Bible imports and finished-note workflows are not implemented.
 
-Local PostgreSQL tests (9), asset builds, production release and the local Docker image build passed on 2026-10-20. Browser verification, PR CI and the actual Lara/Tailscale deployment remain separate acceptance gates; see [delivery status](docs/delivery.md). The approved 25 tasks are published in [GitHub Project 8](https://github.com/users/JuliaMathias/projects/8).
+Local PostgreSQL tests (9), asset builds, production release and the local Docker image build passed on 2026-10-20. Local browser save/reload over WebSocket and phone-width layout checks also passed. PR CI and the actual Lara/Tailscale deployment remain separate acceptance gates; see [delivery status](docs/delivery.md). The approved 25 tasks are published in [GitHub Project 8](https://github.com/users/JuliaMathias/projects/8).
 
 ## Local setup
 

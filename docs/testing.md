@@ -37,3 +37,24 @@ Pass requires all applicable steps. Record failed, blocked or not-run steps expl
 ## Evidence record
 
 Add dated results to issue #1 / delivery status with source/image identity, commands, check outcome and browser/device details. Screenshots can support layout review but not prove persistence or model accuracy. Do not capture cookies, env files, connection URLs containing passwords or private user sources. N01 provides no AI quality or Bible-import evidence.
+
+## Foundation evidence — 2026-10-20
+
+Local in-app Chromium at 1280x720: save/reload retained synthetic UUID
+`f3d19b63-7114-4777-8233-94f9a0e0e7b7`; Phoenix logs confirmed `Transport: :websocket`.
+At 390x844, page scroll width and viewport width were both 390px, the UUID wrapped
+within the page, and Tab reached the save button. This is responsive desktop-browser
+evidence, not a physical-phone/cellular result. Screenshots are temporary local
+artifacts `/tmp/notey-foundation-browser.png` and `/tmp/notey-foundation-phone-width.png`.
+
+Separately, the production image activated through `deploy/apply.sh` with fresh
+local synthetic credentials, ran its migration, returned healthy readiness, and
+retained UUID `809b51db-e24d-4322-b63e-1682e0fa8b98` after both database and web
+containers restarted. Image: `notey:foundation-review`, local ARM architecture,
+ID `sha256:d1ca43e4a57fa9a970437adb0496560916afe1e4c92d43de79b07c60cd27302d`.
+It was built before committing the foundation; Lara must build/test its own actual
+merged revision for amd64. The temporary production-test stack can be stopped
+without deleting its volume; ordinary development PostgreSQL remains separate.
+
+No Lara app rollout, Caddy switch or real remote AI call was performed. The runtime
+acceptance gates remain in issue #1.
