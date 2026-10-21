@@ -1,5 +1,31 @@
 # Initial manual deployment on Lara
 
+## N02 reusable automation direction
+
+N02 / issue #22 now uses an approved Lara-side pull design. The shared versioned
+mechanism is owned by [home-server-infra#17](https://github.com/JuliaMathias/home-server-infra/issues/17),
+with its reusable onboarding/configuration guide in that repository's
+`docs/app-delivery.md`. Notey supplies its application-specific release, database,
+readiness and recovery configuration. See [ADR 005](architecture.md#adr-005--reuse-the-versioned-lara-delivery-mechanism).
+
+Application development stays in this Mac repository. Infrastructure development
+uses `/srv/lara/worktrees/infra-app-delivery` on Lara, in tmux session `notey-n02`:
+
+```sh
+ssh -t lara 'tmux attach -t notey-n02'
+```
+
+Notey backups are approved before deployment plus daily, preserving all successful
+backups from the last five days and at least the newest 30 regardless of age.
+Public-key encryption uses Julia's recovery key held in her password manager and
+a protected offline copy, outside Lara. Each future app must explicitly choose
+its own policy and isolated credentials/state. Neither this policy nor the local
+[backup-format checks](backup-format.md) activates timers or establishes live
+Drive recovery. Existing N01 deployment instructions below remain the current
+runtime recipe until N02 is merged, installed and actually verified.
+
+## N01 manual recipe and evidence
+
 N01 deploys an empty/synthetic foundation. Develop on the Mac. Use an immutable archive of a reviewed revision for deployment, not an editable application development checkout on Lara. The first rollout is active; Julia reported the physical-phone acceptance procedure passed on 2026-10-21. See [delivery status](delivery.md).
 
 ## Ownership and prerequisites

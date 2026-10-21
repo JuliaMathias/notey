@@ -32,6 +32,42 @@ Automatic rollout after a user merges passing changes is approved, implemented i
 
 Google Drive is the approved future backup destination. Encryption, external recovery-key handling and isolated restore evidence remain gates. Backup frequency and expiry are proposals, not approved destructive cleanup. PostgreSQL volumes and source files are runtime state outside Git; no backup/recovery guarantee exists yet.
 
+## ADR 005 — Reuse the versioned Lara delivery mechanism
+
+Approved on 2026-10-21: use Lara-side pull deployment, with CI building the
+amd64 image. Keep the reusable release/backup mechanism and onboarding guide in
+`JuliaMathias/home-server-infra`, companion issue #17. Develop that repository
+on Lara through a named tmux session; develop Notey's adapters and recipes on
+this Mac. The currently proposed polling interval is five minutes.
+
+The shared mechanism owns release eligibility/integrity, serialization,
+orchestration, encrypted backup transport, retention and status. Notey owns its
+Compose recipe, database/migration commands, backup contents, readiness and
+migration-specific recovery plan. Configuration and activation are per-app:
+future applications choose their own paths, secrets, backup folders and retention.
+This avoids copying a host updater into each app without introducing a general
+deployment platform. Do not silently upgrade all apps when the mechanism changes.
+
+Notey's [foundation backup format](backup-format.md) records the database dump,
+source/image identity and explicit file checksums. The Python standard-library
+helper runs independently of BEAM so recovery can inspect a dump when the app
+cannot start. Actual private-file consistency remains issue #21.
+
+Back up before each deployment plus daily. Preserve every successful backup from
+the last five days and at least the newest 30 regardless of age; expiry requires
+both conditions to allow removal. Encrypt to a public key held on Lara, with
+Julia's private recovery key in her password manager plus a protected offline
+copy. Routine backups can run unattended; full decryption/recovery needs access
+to that external key. Do not confuse encryption with protection from deletion.
+
+The alternative was a GitHub runner initiating deployment through restricted
+Tailscale access. Pull avoids granting that access into the shared host, at the
+cost of a checking delay and separate deployment reporting. Live credentials,
+key setup, installed timers, actual release and Drive restore acceptance remain
+pending; approved design is not execution evidence. ADR 005 supersedes ADR 004's
+undecided transport/retention language while retaining its private-access and
+migration safeguards.
+
 ## Sources and compatibility
 
 The scaffold was generated with Phoenix 1.8.7; `mix.lock` records the actual resolved dependencies (Phoenix 1.8.16, LiveView 1.1.33 at foundation validation). `.tool-versions` pins the toolchain, and image digests pin multi-platform base images. Digest pins do not make apt repositories or remote build tooling permanently reproducible; dependency/security updates require another tested PR.
