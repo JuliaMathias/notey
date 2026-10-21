@@ -48,7 +48,7 @@ Use factories to establish starting data, then call the application operation un
 
 ## Coveralls.io setup and verification
 
-Julia confirmed Notey is enabled in her Coveralls account on 2026-10-21. A successful real upload still needs verification, separate from local tests.
+Julia confirmed Notey is enabled in her Coveralls account on 2026-10-21. Real publication was verified for `16cc022`: [Coveralls build 82509820](https://coveralls.io/builds/82509820) identifies PR #26 and the correct branch/commit, with 66 of 182 relevant lines covered (36.26%). ExCoveralls truncates its local display to 36.2%; the underlying covered/total counts agree. Keep this check separate from local tests.
 
 1. If setting up again, sign in to the existing [Coveralls account](https://coveralls.io/) and add/enable `JuliaMathias/notey`. The repository is private; confirm the account supports private-repository coverage. [Current pricing](https://coveralls.io/pricing) lists paid private-repository plans. Do not start a subscription/trial, enter payment information or change repository visibility as an incidental setup step.
 2. Complete any GitHub authorization/selected-repository setup requested by Coveralls. This account step belongs to Julia. Do not paste credentials or tokens into chat or Git. The configured ExCoveralls GitHub mode uses `${{ secrets.GITHUB_TOKEN }}` from the Actions run, not a new repository token in source.
