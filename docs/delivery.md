@@ -2,7 +2,7 @@
 
 GitHub [Project 8](https://github.com/users/JuliaMathias/projects/8) and its issues are the implementation backlog. All 25 approved tasks are published with labels, eight milestones and 64 native blocking relationships, verified after publication on 2026-10-20. `issue-drafts.md` is the historical planning snapshot; update actual work in GitHub and this concise status, not a second backlog.
 
-## N01 — Deployed and accepted; final documentation in review
+## N01 — Deployed, accepted and documentation merged
 
 Application [PR #26](https://github.com/JuliaMathias/notey/pull/26) and build follow-up [PR #28](https://github.com/JuliaMathias/notey/pull/28) are user-merged. Issue: [notey#1](https://github.com/JuliaMathias/notey/issues/1). Companion ingress [PR #12](https://github.com/JuliaMathias/home-server-infra/pull/12) is user-merged and active.
 
@@ -10,7 +10,7 @@ Current rollout status (2026-10-21, 18:32 BRT): **deployed and runtime accepted*
 
 Port 443 retains its previous response byte-for-byte. Only Caddy publishes the Tailscale-bound 8443 route; Notey, PostgreSQL and the running generation service have no direct host port mapping. Shared AI services were not operated by this rollout: transcription was already stopped before deployment, while generation was running under separate work. No claim is made that this deployment restored transcription or validated AI behavior. Exact deployment paths, image identities and recovery limits are in [deployment.md](deployment.md#deployed-release--2026-10-21).
 
-Cleanup: the two exact agent-created UUIDs recorded in testing.md were deleted, with SQL returning precisely those two rows. The phone record was preserved because its UUID was not supplied. Final evidence documentation is in PR #29 for user review; no runtime redeployment is needed for it. No private user material has been imported. Automatic updates and off-host backup/recovery remain N02 / issue #22, the next implementation task.
+Cleanup: the two exact agent-created UUIDs recorded in testing.md were deleted, with SQL returning precisely those two rows. The phone record was preserved because its UUID was not supplied. Final evidence documentation was user-merged in PR #29 as `c27241df535c20edf9b7eb74d7a89d12ba6b1a66`; no runtime redeployment is needed for it. No private user material has been imported. Automatic updates and off-host backup/recovery remain N02 / issue #22, the next implementation task.
 
 Implemented locally: pinned Phoenix/LiveView/PostgreSQL scaffold; UUID schema/migration defaults; real persistence page; readiness endpoint; development database; production release/Docker/Compose recipes; CI; working/setup/testing guidance. No session or AI feature is claimed.
 
@@ -37,9 +37,9 @@ Historical local evidence on 2026-10-20 (the current rollout status above supers
 | Production-container restart/persistence on Mac | Passed: saved UUID survived dedicated app/database restart; not Lara acceptance |
 | Deployed restart/persistence on Lara | Pending |
 
-The historical pending gates above were completed by the current deployment and user-reported phone results. Runtime acceptance is complete; the final documentation PR remains open for review. The exact manual procedure is in [testing.md](testing.md); release operations are in [deployment.md](deployment.md).
+The historical pending gates above were completed by the current deployment and user-reported phone results. Runtime acceptance is complete; PR #29 is merged and issue #1 is closed. The exact manual procedure is in [testing.md](testing.md); release operations are in [deployment.md](deployment.md).
 
-The PR explicitly references #1. A Development closing association is intentionally pending: GitHub closes linked issues on merge, but #1 must stay open through deployment/device acceptance. See [GitHub linking behavior](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue). Both PRs are on Project 8 and attached to this chat. This is a documented remaining workflow limitation, not a claimed Development association.
+Historical association note: the implementation PRs referenced #1 without closing it before runtime acceptance. Final documentation PR #29 used `Closes #1`; its verified merge closed the issue. See [GitHub linking behavior](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue). Both PRs are on Project 8 and attached to this chat. The final documentation merge resolves that acceptance gate.
 
 At the end of task 1, **remind Julia to start a new chat** with this document, product/architecture docs and the current issue/PR links as the handoff. A quiet completion reminder is also attached to this chat.
 
@@ -98,4 +98,4 @@ Issue #22 now depends on accepted issue #1, not future issues #20/#21. Issue #21
 
 ## Initial deployment handoff — 2026-10-21
 
-N01 is deployed and runtime accepted. No further sequencing adjustment is needed: N02 / issue #22 is next. This documentation records the deployed application without implementing automatic deployment. PR #29 is the remaining documentation review; it does not need another runtime rollout. Julia should start a new chat using this document and the next issue as the handoff. Agent-created synthetic records were removed; the unidentified phone record was preserved.
+N01 is deployed and runtime accepted. No further sequencing adjustment is needed: N02 / issue #22 is next. This documentation records the deployed application without implementing automatic deployment. PR #29 was user-merged at `c27241d`; it did not need another runtime rollout. Julia should start a new chat using this document and the next issue as the handoff. Agent-created synthetic records were removed; the unidentified phone record was preserved.
