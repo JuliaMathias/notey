@@ -6,6 +6,8 @@ GitHub [Project 8](https://github.com/users/JuliaMathias/projects/8) and its iss
 
 Branch: `codex/issue-1-project-foundation`. Application [PR #26](https://github.com/JuliaMathias/notey/pull/26). Issue: [notey#1](https://github.com/JuliaMathias/notey/issues/1). Companion ingress: [home-server-infra#11](https://github.com/JuliaMathias/home-server-infra/issues/11).
 
+Current rollout status (2026-10-21): PR #26 is user-merged as `7aeb8a3`, with merged-main CI passing. The first Lara rollout is not active: package-download failures blocked the original image build. A focused Dockerfile change (serialized Hex fetches, 120-second request timeout) passed a real amd64 image build and release-executable smoke check; it still requires user review/merge before deployment. The validation image is `sha256:df8a07872039be08fa5dd306cdb13809b852cfdee7b734717c4b67e01fb973e3`, based on the merged source plus only the Dockerfile change. No app/database or ingress activation has occurred. See the build notes in [deployment.md](deployment.md#slow-network-build-downloads); issue #1 retains the pending rollout/device gates.
+
 Implemented locally: pinned Phoenix/LiveView/PostgreSQL scaffold; UUID schema/migration defaults; real persistence page; readiness endpoint; development database; production release/Docker/Compose recipes; CI; working/setup/testing guidance. No session or AI feature is claimed.
 
 Evidence on 2026-10-20:

@@ -28,6 +28,14 @@ docker image inspect notey:REVISION --format '{{.Id}} {{.Architecture}}'
 
 Record source SHA and resulting image identity in the issue. Build one release at a time, check available memory/CPU, and do not start competing AI evaluations. The Compose runtime limits do not limit Docker image builds.
 
+## Slow-network build downloads
+
+The build fetches locked production dependencies with `HEX_HTTP_CONCURRENCY=1` and `HEX_HTTP_TIMEOUT=120`: one Hex request at a time, allowing up to 120 seconds per request. These settings apply only to that build command, not the running application. Dependency versions remain in `mix.lock`; TLS and registry verification remain enabled. A longer timeout cannot fix an unavailable network or guarantee every download succeeds. See [Hex configuration](https://hex.hexdocs.pm/Mix.Tasks.Hex.Config.html).
+
+Initial Lara builds on 2026-10-21 failed first on installer DNS lookup and then on registry/package timeouts. A build-only public-host mapping and temporary builder resolver isolated the lookup problem; neither is a permanent host DNS or application-network change. Do not hardcode those transient CDN addresses into source. Investigate current connectivity if installer lookup fails again; the Hex dependency timeout does not govern `mix local.hex`, Rebar or Debian downloads.
+
+Validation used an isolated native amd64 builder capped at two CPUs and 4 GiB. The production image completed with the dependency timeout change, and its release executable reported Elixir 1.19.5 / OTP 28 and loaded `NoteyWeb.FoundationLive`. The temporary builder was then stopped, preserving its cache. This is build/package evidence, not deployment, database or HTTPS acceptance. A validation image from an unmerged change must not be presented as the deployed merged release.
+
 ## Secrets and activation
 
 Copy `deploy/.env.example` to `/srv/lara/apps/notey/.env` on Lara with mode 600, outside Git. Generate fresh URL-safe random database password and release cookie, and at least 64 random characters for `SECRET_KEY_BASE`, using Python's `secrets` or `mix phx.gen.secret`; write directly to the private file, without printing values. Set the exact `NOTEY_IMAGE`, `NOTEY_REVISION`, verified `PHX_HOST` and `PHX_PORT=8443`. Never run `docker compose config` without `--quiet` in a recorded log, as interpolation can reveal secrets.
