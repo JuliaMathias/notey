@@ -6,7 +6,7 @@ A personal study workspace combining recordings, personal notes, slides and veri
 
 Task [N01 / #1](https://github.com/JuliaMathias/notey/issues/1) establishes the foundation. The app currently has a minimal LiveView page that persists a synthetic UUID record in PostgreSQL, plus a database readiness endpoint. Session uploads, AI processing, Bible imports and finished-note workflows are not implemented.
 
-The foundation is deployed at [Notey on Lara](https://lara.taila21247.ts.net:8443), accessible through Tailscale. Merged-main CI passed with 11 PostgreSQL tests, coverage and Dialyzer checks, assets and a production release. On 2026-10-21, laptop HTTPS, live save/reload and persistence across a Lara app/database restart passed. Physical phone access over cellular/Tailscale remains pending; task N01 is not yet accepted. See [delivery status](docs/delivery.md). The approved 25 tasks are published in [GitHub Project 8](https://github.com/users/JuliaMathias/projects/8).
+The foundation is deployed at [Notey on Lara](https://lara.taila21247.ts.net:8443), accessible through Tailscale. Merged-main CI passed with 11 PostgreSQL tests, coverage and Dialyzer checks, assets and a production release. On 2026-10-21, laptop HTTPS, live save/reload and persistence across a Lara app/database restart passed. Julia reported the physical-phone cellular/Tailscale procedure passed on 2026-10-21; N01 runtime acceptance is complete. The final evidence documentation remains in PR #29 for review. See [delivery status](docs/delivery.md). The approved 25 tasks are published in [GitHub Project 8](https://github.com/users/JuliaMathias/projects/8).
 
 ## Local setup
 

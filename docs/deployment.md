@@ -1,6 +1,6 @@
 # Initial manual deployment on Lara
 
-N01 deploys an empty/synthetic foundation. Develop on the Mac. Use an immutable archive of a reviewed revision for deployment, not an editable application development checkout on Lara. The first rollout is active; physical-phone acceptance remains pending. See [delivery status](delivery.md).
+N01 deploys an empty/synthetic foundation. Develop on the Mac. Use an immutable archive of a reviewed revision for deployment, not an editable application development checkout on Lara. The first rollout is active; Julia reported the physical-phone acceptance procedure passed on 2026-10-21. See [delivery status](delivery.md).
 
 ## Ownership and prerequisites
 
@@ -79,6 +79,6 @@ The active ingress recipe is `/srv/lara/infrastructure-deployments/72c37eeb195d2
 
 Caddy publishes `100.89.181.91:443` and `100.89.181.91:8443`. The previous port-443 response was compared before and after activation and remained identical. The activation briefly recreated Caddy for the additional port; a subsequent retry and comparison passed. No AI endpoints were exposed. Transcription was already stopped before rollout; generation was running and separately managed.
 
-On this release, a synthetic UUID survived restarting `db web` with the recorded app Compose file, followed by `up -d --wait --wait-timeout 120`. Browser reload and a new save also passed afterward. This establishes persistence through an application/database restart, not host-reboot acceptance or off-host recovery. Phone/cellular testing remains pending. The isolated build container was stopped after image creation, retaining its cache.
+On this release, a synthetic UUID survived restarting `db web` with the recorded app Compose file, followed by `up -d --wait --wait-timeout 120`. Browser reload and a new save also passed afterward. This establishes persistence through an application/database restart, not host-reboot acceptance or off-host recovery. Julia reported phone/cellular testing passed; the specific browser and phone UUID were not supplied. The isolated build container was stopped after image creation, retaining its cache.
 
 Recovery remains service-specific: stop only Notey web if the initial app fails, preserve its database and investigate; there is no earlier production application release to roll back to. For ingress recovery, use the recorded previously deployed configuration from the infrastructure runbook, preserving its existing certificate mount, volumes and port 443. Validate before activation and coordinate with any later infrastructure changes. Do not replace the live ingress with an arbitrary working-tree configuration.
