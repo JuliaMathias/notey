@@ -1,0 +1,19 @@
+name: notey-dev
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_USER: notey
+      POSTGRES_PASSWORD: notey_dev_only
+      POSTGRES_DB: notey_dev
+    ports:
+      - "127.0.0.1:${NOTEY_DB_PORT:-55432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notey -d notey_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  postgres_data:
