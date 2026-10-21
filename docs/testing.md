@@ -113,3 +113,18 @@ without deleting its volume; ordinary development PostgreSQL remains separate.
 
 No Lara app rollout, Caddy switch or real remote AI call was performed. The runtime
 acceptance gates remain in issue #1.
+
+## Lara deployment evidence — 2026-10-21
+
+Release `23e61d8642ed9ab37c3fa1b60441933e7be6a6db` and image identity are recorded in [deployment.md](deployment.md#deployed-release--2026-10-21). Merged-main CI [39675826365](https://github.com/JuliaMathias/notey/actions/runs/39675826365) passed separately from these live checks.
+
+| Live check | Result and evidence |
+| --- | --- |
+| Migration and readiness | Passed: dedicated PostgreSQL migration `20261020195000`; app/database healthy; Mac and Lara HTTPS `/health` returned 200 with the expected JSON. |
+| Real laptop browser | Passed: in-app Chromium at the deployed URL saved UUID `80d0ca6b-28b2-4007-96d3-6d7f241b1c00` at 21:07:58 UTC; reload retained it. Server logs confirmed `CONNECTED TO Phoenix.LiveView.Socket` with `Transport: :websocket`. A developer-tools HTTP 101 capture was not collected; transport evidence is from the server and successful browser events. |
+| Restart persistence | Passed: the exact UUID was queried before and after restarting only `notey` db/web; both containers became healthy and browser reload retained the UUID. A new save afterward produced `21ec3532-a3af-45eb-8852-8312d2c00f8d` at 21:12:16 UTC; reload retained it too. |
+| Existing routes and publication | Passed: port-443 body unchanged before/after; Caddy ports bound to Tailscale IPv4; no Notey/database host mappings and no direct mapping on the running generation service. Transcription was already stopped; no AI quality or health-restoration claim. |
+| Physical phone, cellular/Tailscale and touch/layout | Passed, reported by Julia on 2026-10-21 at approximately 18:32 BRT in response to the full procedure. Browser/device and UUID were not supplied; not directly observed by the agent. |
+| Test-data cleanup | Passed for the two agent-created UUIDs above: exact-ID SQL deletion returned only those two rows. The unidentified phone record was deliberately preserved. |
+
+No host reboot, backup restore, AI integration, session upload or Bible-import acceptance is implied by these checks. The screenshot `/tmp/notey-deployed-lara.png` is temporary local visual evidence, not a tracked private-data artifact.
