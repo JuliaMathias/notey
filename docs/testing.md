@@ -9,7 +9,7 @@ docker compose -f compose.dev.yaml up -d --wait
 mix setup
 mix format --check-formatted
 mix compile --warnings-as-errors
-mix test
+mix coveralls.html
 mix assets.build
 MIX_ENV=prod mix compile --warnings-as-errors
 MIX_ENV=prod mix assets.deploy
@@ -19,6 +19,26 @@ MIX_ENV=prod mix release
 The foundation suite checks PostgreSQL's actual UUID column type and record reload, LiveView mount/click/new-mount persistence, readiness success plus deterministic unavailable/unexpected query results, and HTML/JSON errors. A LiveView test drives the server-side LiveView process; it does not test a real browser WebSocket, responsive layout or touch interaction.
 
 CI repeats these checks on Ubuntu with PostgreSQL. Report the exact latest PR revision and CI result independently of local results. `docker build -t notey:foundation-review .` additionally builds a production image for the local architecture; a Mac ARM image is not evidence that an amd64 release runs on Lara.
+
+## Coverage checks
+
+ExCoveralls 0.18.5 runs the existing ExUnit suite with line coverage. It is a test-only dependency; CAStore is also test-only to satisfy ExCoveralls' optional certificate-module reference without a compiler warning. No hosted coverage service or upload token is configured.
+
+```sh
+mix coveralls
+mix coveralls.html
+mix coveralls.detail --filter lib/notey/health.ex
+```
+
+All three commands select the test environment automatically. `mix coveralls.html` writes `cover/excoveralls.html`; the HTML highlights lines the tests did/did not execute. Reports remain outside Git. CI runs the HTML command instead of running the same test suite twice, enforces the configured minimum, then uploads `cover/` to the private run's **coverage-report** artifact for seven days. An artifact is not sent to Coveralls.io.
+
+The initial measured baseline on 2026-10-21 is **36.2%**, with 9 tests passing. `coveralls.json` sets an initial **35% minimum**. This is a conservative starting guard against dropping below the current baseline, not a desired final coverage level or a guarantee against every smaller regression. Only `test/` helpers are excluded; unused generated components and release operations remain visible. Do not hide application files or add tests that merely call code to raise a percentage. Raise the minimum with meaningful tests as application behavior grows.
+
+Coverage records which executable lines ran. It does not establish that assertions are good, every branch was checked, a browser/phone works or a model produced faithful notes. Zero-line modules may show 0% without lowering the line-weighted total.
+
+Verification of this tooling must include both a passing run at the configured minimum and a controlled failure above the measured coverage, restoring the tracked configuration afterward. A missing report must not be described as a successful coverage check. Manual phone/Lara acceptance remains a separate N01 gate; adding coverage does not repeat or complete it.
+
+Source: [ExCoveralls configuration and minimum coverage](https://excoveralls.hexdocs.pm/readme.html#coverage-options).
 
 ## N01 browser and deployed acceptance procedure
 

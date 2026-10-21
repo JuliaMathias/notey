@@ -65,3 +65,7 @@ Infrastructure companion [PR #12](https://github.com/JuliaMathias/home-server-in
 ## PR template adoption — 2026-10-21
 
 The user approved the structured PR template and requested it globally, in Notey and in the AI/infrastructure project. `.github/PULL_REQUEST_TEMPLATE.md` is the repository version, with an explicit manual-testing decision and runnable procedure when needed. Both open PR descriptions use the structure. No implementation sequencing or runtime acceptance gates change: user merges and actual Lara/device verification remain pending.
+
+## Coverage addition — 2026-10-21
+
+The user requested ExCoveralls in N01 / PR #26. Add test-only tooling, a line-coverage report and a CI minimum of 35% against an initial 36.2% baseline (9 passing tests). Keep generated application components visible; exclude only test support. CI retains a private downloadable report for seven days without an external coverage account. Local validation passed at 35%; a deliberate temporary 100% minimum correctly exited with failure despite all 9 tests passing, and the tracked 35% setting was restored. Latest-head CI remains a separate check. No sequencing changes are needed because this extends the foundation's existing test/CI scope; actual Lara and physical-phone acceptance remain pending.

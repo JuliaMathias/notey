@@ -37,7 +37,16 @@ jobs:
       - run: mix deps.get --check-locked
       - run: mix format --check-formatted
       - run: MIX_ENV=test mix compile --warnings-as-errors
-      - run: mix test
+      - name: Tests and coverage minimum
+        run: mix coveralls.html
+      - name: Save coverage report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: coverage-report
+          path: cover/
+          if-no-files-found: error
+          retention-days: 7
       - run: mix assets.setup
       - run: mix assets.build
       - run: MIX_ENV=prod mix compile --warnings-as-errors
