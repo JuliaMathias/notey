@@ -39,7 +39,9 @@ defmodule Notey.MixProject do
         precommit: :test,
         coveralls: :test,
         "coveralls.html": :test,
-        "coveralls.detail": :test
+        "coveralls.detail": :test,
+        "coveralls.github": :test,
+        "coveralls.multiple": :test
       ]
     ]
   end
@@ -69,6 +71,7 @@ defmodule Notey.MixProject do
       {:phoenix_live_view, "~> 1.1.0"},
       {:lazy_html, ">= 0.1.0", only: :test},
       {:excoveralls, "~> 0.18.5", only: :test},
+      {:ex_machina, "~> 2.8.2", only: :test},
       {:castore, "~> 1.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},

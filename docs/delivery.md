@@ -69,3 +69,9 @@ The user approved the structured PR template and requested it globally, in Notey
 ## Coverage addition — 2026-10-21
 
 The user requested ExCoveralls in N01 / PR #26. Add test-only tooling, a line-coverage report and a CI minimum of 35% against an initial 36.2% baseline (9 passing tests). Keep generated application components visible; exclude only test support. CI retains a private downloadable report for seven days without an external coverage account. Local validation passed at 35%; a deliberate temporary 100% minimum correctly exited with failure despite all 9 tests passing, and the tracked 35% setting was restored. Latest-head CI remains a separate check. No sequencing changes are needed because this extends the foundation's existing test/CI scope; actual Lara and physical-phone acceptance remain pending.
+
+## Coveralls.io and factory follow-up — 2026-10-21
+
+The user requested the hosted Coveralls.io integration and ExMachina after the initial local-only coverage increment. This supersedes the earlier no-external-upload direction. Use ExCoveralls' multiple-report task to test once, enforce the local minimum and post through GitHub authentication. Julia confirmed Notey is enabled in her Coveralls account; a real report must still be verified; no paid subscription/trial is authorized. ExMachina provides sandboxed synthetic setup for latest-record ordering and pre-existing-record page tests: 11 tests pass locally at 36.2%. Existing deployment/device gates and issue sequencing need no changes because this remains test/CI work within N01.
+
+The user also approved ExCoveralls/Coveralls.io and ExMachina as defaults for new Elixir projects in the global working instructions. Factories replace reusable test-data fixture helpers, while assertions exercise real application code. Hand-authored callbacks now identify their specific behaviour instead of `@impl true`; this changes compiler/readability guidance, not application behavior.

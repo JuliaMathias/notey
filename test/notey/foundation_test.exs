@@ -1,7 +1,28 @@
 defmodule Notey.FoundationTest do
   @moduledoc "Exercises real PostgreSQL UUID storage and reload without remote services."
   use Notey.DataCase, async: true
+  import Notey.Factory
   alias Notey.Foundation
+
+  test "latest check uses timestamp first and UUID to resolve equal timestamps" do
+    insert(:foundation_check,
+      id: "00000000-0000-0000-0000-000000000009",
+      inserted_at: ~U[2026-01-01 00:00:00.000000Z]
+    )
+
+    newest =
+      insert(:foundation_check,
+        id: "00000000-0000-0000-0000-000000000003",
+        inserted_at: ~U[2026-01-02 00:00:00.000000Z]
+      )
+
+    insert(:foundation_check,
+      id: "00000000-0000-0000-0000-000000000002",
+      inserted_at: newest.inserted_at
+    )
+
+    assert Foundation.latest_check().id == newest.id
+  end
 
   test "a saved synthetic check reloads with a UUID and UTC timestamp" do
     assert Foundation.latest_check() == nil

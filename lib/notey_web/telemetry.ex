@@ -9,7 +9,7 @@ defmodule NoteyWeb.Telemetry do
     Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
-  @impl true
+  @impl Supervisor
   @doc "Configures the periodic measurement children."
   @spec init(term()) :: {:ok, {Supervisor.sup_flags(), [Supervisor.child_spec()]}}
   def init(_arg) do

@@ -5,7 +5,7 @@ defmodule NoteyWeb.FoundationLive do
 
   @doc "Loads the last database check so persistence is observable after reload."
   @spec mount(map(), map(), Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     {:ok, assign(socket, page_title: "Notey", check: Foundation.latest_check(), error: nil)}
   end
@@ -13,7 +13,7 @@ defmodule NoteyWeb.FoundationLive do
   @doc "Persists a synthetic check only after the user requests one."
   @spec handle_event(String.t(), map(), Phoenix.LiveView.Socket.t()) ::
           {:noreply, Phoenix.LiveView.Socket.t()}
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("save-check", _params, socket) do
     case Foundation.save_check() do
       {:ok, check} -> {:noreply, assign(socket, check: check, error: nil)}
@@ -26,7 +26,7 @@ defmodule NoteyWeb.FoundationLive do
 
   @doc "Renders the honest foundation status and the persistence test control."
   @spec render(map()) :: Phoenix.LiveView.Rendered.t()
-  @impl true
+  @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash}>

@@ -5,7 +5,7 @@ defmodule Notey.Application do
 
   use Application
 
-  @impl true
+  @impl Application
   @doc "Starts database, telemetry, PubSub and the web endpoint under supervision."
   @spec start(Application.start_type(), term()) :: Supervisor.on_start()
   def start(_type, _args) do
@@ -28,7 +28,7 @@ defmodule Notey.Application do
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
-  @impl true
+  @impl Application
   @doc "Forwards changed runtime endpoint settings during an application upgrade."
   @spec config_change(keyword(), keyword(), [atom()]) :: :ok
   def config_change(changed, _new, removed) do

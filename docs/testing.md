@@ -22,7 +22,7 @@ CI repeats these checks on Ubuntu with PostgreSQL. Report the exact latest PR re
 
 ## Coverage checks
 
-ExCoveralls 0.18.5 runs the existing ExUnit suite with line coverage. It is a test-only dependency; CAStore is also test-only to satisfy ExCoveralls' optional certificate-module reference without a compiler warning. No hosted coverage service or upload token is configured.
+ExCoveralls 0.18.5 runs the existing ExUnit suite with line coverage. It is a test-only dependency; CAStore is also test-only to satisfy ExCoveralls' optional certificate-module reference without a compiler warning. The user requested Coveralls.io integration after the initial local-report setup. CI uses GitHub's short-lived job token; no personal access token is stored in the repository.
 
 ```sh
 mix coveralls
@@ -30,15 +30,35 @@ mix coveralls.html
 mix coveralls.detail --filter lib/notey/health.ex
 ```
 
-All three commands select the test environment automatically. `mix coveralls.html` writes `cover/excoveralls.html`; the HTML highlights lines the tests did/did not execute. Reports remain outside Git. CI runs the HTML command instead of running the same test suite twice, enforces the configured minimum, then uploads `cover/` to the private run's **coverage-report** artifact for seven days. An artifact is not sent to Coveralls.io.
+All three commands select the test environment automatically. `mix coveralls.html` writes `cover/excoveralls.html`; the HTML highlights lines the tests did/did not execute. Reports remain outside Git. CI runs `mix coveralls.multiple --type html --type github`: one test run produces the HTML report, checks the 35% minimum, then posts source-code line coverage and commit/PR metadata to Coveralls.io. The local HTML artifact remains available for seven days. Git history is fetched so ExCoveralls can identify the tested PR commit. The `html` type runs first, so a failed local minimum stops the upload.
 
-The initial measured baseline on 2026-10-21 is **36.2%**, with 9 tests passing. `coveralls.json` sets an initial **35% minimum**. This is a conservative starting guard against dropping below the current baseline, not a desired final coverage level or a guarantee against every smaller regression. Only `test/` helpers are excluded; unused generated components and release operations remain visible. Do not hide application files or add tests that merely call code to raise a percentage. Raise the minimum with meaningful tests as application behavior grows.
+The initial measured baseline on 2026-10-21 is **36.2%**, with the original 9 tests passing; the ExMachina addition brings the suite to 11 tests with the same line coverage. `coveralls.json` sets an initial **35% minimum**. This is a conservative starting guard against dropping below the current baseline, not a desired final coverage level or a guarantee against every smaller regression. Only `test/` helpers are excluded; unused generated components and release operations remain visible. Do not hide application files or add tests that merely call code to raise a percentage. Raise the minimum with meaningful tests as application behavior grows.
 
 Coverage records which executable lines ran. It does not establish that assertions are good, every branch was checked, a browser/phone works or a model produced faithful notes. Zero-line modules may show 0% without lowering the line-weighted total.
 
 Verification of this tooling must include both a passing run at the configured minimum and a controlled failure above the measured coverage, restoring the tracked configuration afterward. A missing report must not be described as a successful coverage check. Manual phone/Lara acceptance remains a separate N01 gate; adding coverage does not repeat or complete it.
 
 Source: [ExCoveralls configuration and minimum coverage](https://excoveralls.hexdocs.pm/readme.html#coverage-options).
+
+## Test data with ExMachina
+
+`Notey.Factory` in `test/support/factory.ex` uses test-only ExMachina 2.8.2 with the existing PostgreSQL sandbox. Import it only in tests that need setup data. `build(:foundation_check)` creates an unsaved struct; `insert(:foundation_check, inserted_at: timestamp)` saves a synthetic record inside the test transaction. Let Ecto create UUIDs/timestamps unless the behavior under test requires explicit values.
+
+Use factories to establish starting data, then call the application operation under test. Do not replace `Foundation.save_check/0` with a factory insertion when testing whether the app saves correctly. Current examples cover selecting the latest entry with deterministic date/UUID tie-breaking, and opening the page when an entry already exists. They add behavior assertions rather than tests of ExMachina itself. Test fixtures never use personal source data.
+
+## Coveralls.io setup and verification
+
+Julia confirmed Notey is enabled in her Coveralls account on 2026-10-21. A successful real upload still needs verification, separate from local tests.
+
+1. If setting up again, sign in to the existing [Coveralls account](https://coveralls.io/) and add/enable `JuliaMathias/notey`. The repository is private; confirm the account supports private-repository coverage. [Current pricing](https://coveralls.io/pricing) lists paid private-repository plans. Do not start a subscription/trial, enter payment information or change repository visibility as an incidental setup step.
+2. Complete any GitHub authorization/selected-repository setup requested by Coveralls. This account step belongs to Julia. Do not paste credentials or tokens into chat or Git. The configured ExCoveralls GitHub mode uses `${{ secrets.GITHUB_TOKEN }}` from the Actions run, not a new repository token in source.
+3. Re-run the PR's CI workflow or push the next reviewed commit. Expect 11 passing tests, a coverage percentage above the tracked minimum, an HTML artifact, and ExCoveralls' explicit successful-upload message.
+4. In Coveralls, verify the new build belongs to `JuliaMathias/notey`, matches the CI commit/PR and shows the expected source files/line coverage. Record the build URL and result in PR #26. Enabling the repository alone is not evidence of a successful report.
+5. If registration/authorization fails, fix the account setup and rerun; keep that failure visible. ExCoveralls 0.18.5 treats some timeouts/maintenance errors as nonfatal, so a green CI job alone is not proof that Coveralls accepted a report. Preserve the local minimum/report check and record remote publication as blocked/unverified until an actual report is confirmed.
+
+Local `mix test` and `mix coveralls.html` never upload to Coveralls. CI's external integration is intentional and authorized; its report includes tracked application source text and coverage, not private recordings/notes/Bible data. No production behavior changes and no additional phone test are needed for these test tools. Existing N01 deployment/device checks still apply.
+
+Sources: [ExMachina](https://ex-machina.hexdocs.pm/readme.html), [ExCoveralls GitHub integration](https://excoveralls.hexdocs.pm/readme.html#mix-coveralls-github-post-coverage-from-github-actions), and the installed ExCoveralls 0.18.5 `Mix.Tasks.Coveralls.Multiple` implementation (one run, multiple report types).
 
 ## N01 browser and deployed acceptance procedure
 
