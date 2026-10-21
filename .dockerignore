@@ -64,3 +64,4 @@ erl_crash.dump
 
 # Rebuildable Dialyzer analysis tables; never source or runtime data.
 /.dialyzer/
+__pycache__/

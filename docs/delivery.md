@@ -99,3 +99,50 @@ Issue #22 now depends on accepted issue #1, not future issues #20/#21. Issue #21
 ## Initial deployment handoff — 2026-10-21
 
 N01 is deployed and runtime accepted. No further sequencing adjustment is needed: N02 / issue #22 is next. This documentation records the deployed application without implementing automatic deployment. PR #29 was user-merged at `c27241d`; it did not need another runtime rollout. Julia should start a new chat using this document and the next issue as the handoff. Agent-created synthetic records were removed; the unidentified phone record was preserved.
+
+## N02 — Backup contract implemented; reusable delivery in progress
+
+Verified on 2026-10-21: PR #29 is user-merged at `c27241d`; N01 is accepted.
+Issue [#22](https://github.com/JuliaMathias/notey/issues/22) is the current task,
+on `codex/issue-22-tested-releases`. The unrelated untracked `CLAUDE.md` is preserved.
+
+The first focused increment implements a versioned archive/manifest with source,
+image and payload checksums, rejects unsafe/corrupt contents and refuses restore
+overwrite. Six deterministic tests and an isolated real PostgreSQL 17 dump/restore
+passed locally, including recovery of a dropped column and synthetic source file.
+See [backup format and test procedure](backup-format.md). This establishes the
+foundation recovery contract, not live backups or automatic deployment.
+
+Approved on 2026-10-21: backups before each deployment plus daily. Keep every
+backup from the last five days and at least the newest 30 backups regardless of
+age. A backup is eligible for expiry only when it is both older than five days
+and outside the newest 30. Failed/incomplete backups must not displace successful
+recovery points. No expiry mechanism has been implemented or enabled.
+
+Approved on 2026-10-21: Lara-side pull deployment; public-key encryption with
+Julia’s recovery key stored in her password manager and a protected offline copy.
+Julia also requested a reusable workflow for future Lara apps, with per-app policy
+parameters and onboarding documentation. Shared mechanisms belong to companion
+[home-server-infra#17](https://github.com/JuliaMathias/home-server-infra/issues/17),
+developed on Lara in tmux session `notey-n02`; Notey integration stays on this Mac.
+Live repository/Drive credentials and recovery-key setup remain pending. The
+five-minute checking interval is a proposed reversible operating setting.
+
+Remaining acceptance gates: CI/image publication and identity verification;
+merged-only/passing-CI selection and serialization; pre-migration encrypted backup;
+successful and failed-health update exercises; safe migration recovery; real Drive
+upload/download and external-key restore; live laptop HTTPS/WebSocket/data checks;
+preserved existing ingress and shared AI state. Infrastructure guidance and
+policy code are being prepared in the separate issue #17 worktree; no live
+infrastructure configuration or runtime deployment has changed. Provisioning belongs
+in a separately reviewed owning-repository PR.
+
+Plan review: no feature-sequence adjustment is needed. N02 remains before session
+features; #21 later extends file/job consistency and #20 gates private asset access.
+Do not mark issue #22 accepted or close it from this contract-only increment.
+
+Companion verification so far: 13 deterministic infrastructure policy tests passed
+on Lara without contacting Docker, Drive, GitHub or AI services. The shared
+runner/adapters and runtime acceptance gates remain incomplete. Notey local
+formatting, 11 application tests (36.2% coverage) and Dialyzer passed separately.
+Latest-head CI remains required after the branch is pushed.

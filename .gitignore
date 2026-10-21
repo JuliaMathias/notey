@@ -64,3 +64,6 @@ npm-debug.log
 
 # Rebuildable Dialyzer analysis tables; never source or runtime data.
 /.dialyzer/
+
+# Local deployment-tool bytecode; generated, never part of a release.
+__pycache__/

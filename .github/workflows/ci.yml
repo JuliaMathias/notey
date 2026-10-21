@@ -26,6 +26,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
+      - name: Backup archive contract (synthetic, no remote services)
+        run: python3 -m unittest discover -s deploy -p 'test_backup_archive.py' -v
       - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1
         with:
           otp-version: '28.3.1'

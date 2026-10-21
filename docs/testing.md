@@ -1,5 +1,10 @@
 # Testing and evidence
 
+N02's separate [backup-format checks](backup-format.md#runnable-local-verification)
+cover archive integrity and an opt-in real local PostgreSQL restore, including a
+destructive schema change that image rollback alone cannot recover. They do not
+establish live encryption, Google Drive access or Lara release acceptance.
+
 ## Local automated checks
 
 Prerequisites and local setup are in the README. Ordinary tests use the local PostgreSQL test database, synthetic data and ExUnit SQL sandbox rollback. They never contact Lara, Drive, personal accounts or AI services.
