@@ -1,6 +1,6 @@
 # Initial manual deployment on Lara
 
-N01 deploys an empty/synthetic foundation. Develop on the Mac. Use an immutable archive of a reviewed revision for deployment, not an editable application development checkout on Lara. The actual rollout remains pending until the required PRs are user-merged; see [delivery status](delivery.md).
+N01 deploys an empty/synthetic foundation. Develop on the Mac. Use an immutable archive of a reviewed revision for deployment, not an editable application development checkout on Lara. The first rollout is active; physical-phone acceptance remains pending. See [delivery status](delivery.md).
 
 ## Ownership and prerequisites
 
@@ -64,3 +64,21 @@ Follow [testing.md](testing.md) for actual HTTPS/WebSocket, phone-over-cellular 
 Before future nontrivial migrations, obtain a consistent recovery point and assess schema compatibility. If an image fails without an incompatible migration, restore the prior recorded image/revision in the private env and run `deploy/apply.sh` again. Do not automatically reverse migrations or delete volumes. For N01's first-ever installation there is no prior app release; stop the Notey web service, preserve PostgreSQL state and investigate. Existing Lara routes and shared AI stay running.
 
 Google Drive backup/restore automation is N02 and not implemented here. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
+
+## Deployed release — 2026-10-21
+
+The first deployment uses merged Notey revision `23e61d8642ed9ab37c3fa1b60441933e7be6a6db`. Source and deployment recipes are retained at `/srv/lara/apps/notey/releases/23e61d8642ed9ab37c3fa1b60441933e7be6a6db`; this is an immutable release directory, not an application development checkout. Its `source.tar` SHA-256 is `594635a6d2747b383947d625100c995b7d9fae9010b03ead6b6f10488435ba06`.
+
+- App image tag: `notey:23e61d8642ed9ab37c3fa1b60441933e7be6a6db`; amd64 image ID: `sha256:df8a07872039be08fa5dd306cdb13809b852cfdee7b734717c4b67e01fb973e3`.
+- PostgreSQL image ID: `sha256:79bd7c99e923138f136f8009d6bffa66e21e9d4fda5c0c561b00fc9c90cfe537`.
+- Private runtime file: `/srv/lara/apps/notey/.env`, mode 600. Keep existing secrets on subsequent releases.
+- `deploy/apply.sh` ran migration `20261020195000`, created the dedicated persistent database volume and started healthy database/web containers. Neither publishes a host port.
+- HTTPS: `https://lara.taila21247.ts.net:8443`; `/health` returns HTTP 200 with `{"status":"ok"}` under normal certificate verification.
+
+The active ingress recipe is `/srv/lara/infrastructure-deployments/72c37eeb195d2851ec157d7f7c3c601b3eb663f7/caddy/compose.yaml`, from the merged infrastructure companion. Its certificate mount points to the existing `/srv/lara/infrastructure/caddy/certs` directory, read-only, instead of a relative directory. No certificates were copied or permissions changed. Compose project `lara-caddy`, Caddy image, named volumes and `lara-proxy` were preserved. Use this active recipe for ingress operations; do not assume an unrelated infrastructure working branch represents the live recipe.
+
+Caddy publishes `100.89.181.91:443` and `100.89.181.91:8443`. The previous port-443 response was compared before and after activation and remained identical. The activation briefly recreated Caddy for the additional port; a subsequent retry and comparison passed. No AI endpoints were exposed. Transcription was already stopped before rollout; generation was running and separately managed.
+
+On this release, a synthetic UUID survived restarting `db web` with the recorded app Compose file, followed by `up -d --wait --wait-timeout 120`. Browser reload and a new save also passed afterward. This establishes persistence through an application/database restart, not host-reboot acceptance or off-host recovery. Phone/cellular testing remains pending. The isolated build container was stopped after image creation, retaining its cache.
+
+Recovery remains service-specific: stop only Notey web if the initial app fails, preserve its database and investigate; there is no earlier production application release to roll back to. For ingress recovery, use the recorded previously deployed configuration from the infrastructure runbook, preserving its existing certificate mount, volumes and port 443. Validate before activation and coordinate with any later infrastructure changes. Do not replace the live ingress with an arbitrary working-tree configuration.

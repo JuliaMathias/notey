@@ -4,13 +4,17 @@ GitHub [Project 8](https://github.com/users/JuliaMathias/projects/8) and its iss
 
 ## N01 — Foundation in progress
 
-Branch: `codex/issue-1-project-foundation`. Application [PR #26](https://github.com/JuliaMathias/notey/pull/26). Issue: [notey#1](https://github.com/JuliaMathias/notey/issues/1). Companion ingress: [home-server-infra#11](https://github.com/JuliaMathias/home-server-infra/issues/11).
+Application [PR #26](https://github.com/JuliaMathias/notey/pull/26) and build follow-up [PR #28](https://github.com/JuliaMathias/notey/pull/28) are user-merged. Issue: [notey#1](https://github.com/JuliaMathias/notey/issues/1). Companion ingress [PR #12](https://github.com/JuliaMathias/home-server-infra/pull/12) is user-merged and active.
 
-Current rollout status (2026-10-21): PR #26 is user-merged as `7aeb8a3`, with merged-main CI passing. The first Lara rollout is not active: package-download failures blocked the original image build. A focused Dockerfile change (serialized Hex fetches, 120-second request timeout) passed a real amd64 image build and release-executable smoke check; it still requires user review/merge before deployment. The validation image is `sha256:df8a07872039be08fa5dd306cdb13809b852cfdee7b734717c4b67e01fb973e3`, based on the merged source plus only the Dockerfile change. No app/database or ingress activation has occurred. See the build notes in [deployment.md](deployment.md#slow-network-build-downloads); issue #1 retains the pending rollout/device gates.
+Current rollout status (2026-10-21, 18:12 BRT): **deployed, with laptop and restart checks passed; physical phone acceptance pending**. Lara runs merged revision `23e61d8642ed9ab37c3fa1b60441933e7be6a6db`, amd64 image `sha256:df8a07872039be08fa5dd306cdb13809b852cfdee7b734717c4b67e01fb973e3`. [Merged-main CI passed](https://github.com/JuliaMathias/notey/actions/runs/39675826365). The dedicated database migration and container readiness passed. [Notey](https://lara.taila21247.ts.net:8443) returns valid HTTPS; a real in-app Chromium save/reload worked, Phoenix confirmed WebSocket transport, and the saved UUID survived a controlled restart of only Notey and its database. A second save/reload after restart also worked.
+
+Port 443 retains its previous response byte-for-byte. Only Caddy publishes the Tailscale-bound 8443 route; Notey, PostgreSQL and the running generation service have no direct host port mapping. Shared AI services were not operated by this rollout: transcription was already stopped before deployment, while generation was running under separate work. No claim is made that this deployment restored transcription or validated AI behavior. Exact deployment paths, image identities and recovery limits are in [deployment.md](deployment.md#deployed-release--2026-10-21).
+
+Remaining acceptance: Julia's phone over cellular with Tailscale, touch/layout and save/reload evidence; then remove only the recorded synthetic test UUIDs. No private user material has been imported. Automatic updates and off-host backup/recovery remain N02 / issue #22, the next implementation task.
 
 Implemented locally: pinned Phoenix/LiveView/PostgreSQL scaffold; UUID schema/migration defaults; real persistence page; readiness endpoint; development database; production release/Docker/Compose recipes; CI; working/setup/testing guidance. No session or AI feature is claimed.
 
-Evidence on 2026-10-20:
+Historical local evidence on 2026-10-20 (the current rollout status above supersedes the pending deployment entries below):
 
 | Check | Result |
 | --- | --- |
@@ -39,7 +43,7 @@ The PR explicitly references #1. A Development closing association is intentiona
 
 At the end of task 1, **remind Julia to start a new chat** with this document, product/architecture docs and the current issue/PR links as the handoff. A quiet completion reminder is also attached to this chat.
 
-Infrastructure companion [PR #12](https://github.com/JuliaMathias/home-server-infra/pull/12) prepared in a separate worktree: commit `5283d97`, Compose/Caddy validation passed, no live routing switch.
+Infrastructure companion PR #12 was prepared separately and later user-merged as `72c37eeb195d2851ec157d7f7c3c601b3eb663f7`. Its ingress is now active; see the current rollout record above.
 
 ## Published sequence
 
@@ -91,3 +95,7 @@ Julia requested automatic deployment immediately after task 1, before session fe
 GitHub issue numbers/URLs stay stable. Task labels N02–N21 become N03–N22; former N22 becomes N02; N01 and N23–N25 are unchanged. Current issue titles/bodies and active documentation use the new labels. `issue-drafts.md` remains the approved historical snapshot with its original numbering; use GitHub/current delivery docs for implementation order.
 
 Issue #22 now depends on accepted issue #1, not future issues #20/#21. Issue #21 later extends the early pipeline for actual private files and remote jobs and now depends on #22; issue #20 still gates hosted private-data access. Do not block synthetic-foundation automation on features that do not exist yet. Google Drive credentials, encryption/recovery evidence and unapproved backup-expiry retention remain implementation decisions/gates; no paid services or automated deletion are authorized by resequencing. Other feature dependencies are unchanged. N01 still requires its first manual deployment and real device acceptance.
+
+## Initial deployment handoff — 2026-10-21
+
+N01's manual rollout is active. No further sequencing adjustment is needed: N02 / issue #22 remains next, after N01 device acceptance. This documentation records the deployed application without implementing automatic deployment. Leave #1 open until the phone result and synthetic-data cleanup are recorded. The reminder to start a new chat remains pending until task 1 is finished.
