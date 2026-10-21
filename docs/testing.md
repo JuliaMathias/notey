@@ -10,6 +10,7 @@ mix setup
 mix format --check-formatted
 mix compile --warnings-as-errors
 mix coveralls.html
+mix dialyzer
 mix assets.build
 MIX_ENV=prod mix compile --warnings-as-errors
 MIX_ENV=prod mix assets.deploy
@@ -19,6 +20,20 @@ MIX_ENV=prod mix release
 The foundation suite checks PostgreSQL's actual UUID column type and record reload, LiveView mount/click/new-mount persistence, readiness success plus deterministic unavailable/unexpected query results, and HTML/JSON errors. A LiveView test drives the server-side LiveView process; it does not test a real browser WebSocket, responsive layout or touch interaction.
 
 CI repeats these checks on Ubuntu with PostgreSQL. Report the exact latest PR revision and CI result independently of local results. `docker build -t notey:foundation-review .` additionally builds a production image for the local architecture; a Mac ARM image is not evidence that an amd64 release runs on Lara.
+
+## Dialyzer type analysis
+
+Run `mix dialyzer` after `mix deps.get`. The command automatically uses the test environment, so it analyzes application modules and compiled test-support modules, including the factory, against the same dependencies as tests. ExUnit is explicitly added to the lookup tables because test-support modules call it. ExUnit `.exs` test cases are executed by the test suite rather than compiled into this analysis. Dialyxir 1.4.8 is the Mix integration for Erlang's Dialyzer; it is a dev/test-only dependency with `runtime: false` and is excluded from production releases.
+
+Dialyzer compares inferred types with function contracts and reports inconsistencies, such as passing a value a function cannot accept. It does not run application workflows or prove every spec correct, so keep behavioral tests, coverage and browser/integration checks separate.
+
+The first run builds persistent lookup tables (PLTs): reusable type information for Erlang, Elixir and dependencies. These are generated under `.dialyzer/`, ignored by Git and excluded from Docker build context. CI caches them separately by OS, pinned Erlang/Elixir versions and dependency/project configuration. A compatible fallback cache is checked and updated automatically; `mix dialyzer --format github` always runs the analysis, even on a cache hit, and findings fail the check. No warning ignore file or exit-status bypass is configured. The initial run exposed missing ExUnit lookup information and JS helper contracts that claimed LiveView's opaque internal type while constructing public `%JS{}` structs. Including ExUnit and using the public struct contracts resolves these without changing runtime behavior or suppressing findings.
+
+To reproduce CI locally, run `mix dialyzer --format github`. Success requires exit status 0 and no warnings. When a warning appears, inspect its source location and compare the spec with actual possible values before changing code or types. A rebuild can be forced by moving only the generated `.dialyzer/` directory aside, then rerunning; never delete application data to reset analysis. No database, Lara connection or phone test is needed for static analysis itself.
+
+Validation on 2026-10-21: the clean project passed with 0 errors/0 skips; a temporary `integer()` return contract with an atom result failed with exit status 2 and an `invalid_contract` GitHub annotation. The probe was removed, and clean analysis and all 11 tests passed again. The probe is not tracked or part of the application.
+
+The cache and GitHub annotation format follow the pattern in [Moolah's CI](https://github.com/JuliaMathias/moolah/blob/main/.github/workflows/ci.yml), adapted to Notey's pinned actions/toolchain and existing coverage/release checks. Source: [Dialyxir documentation](https://dialyxir.hexdocs.pm/readme.html).
 
 ## Coverage checks
 

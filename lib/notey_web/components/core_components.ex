@@ -467,7 +467,8 @@ defmodule NoteyWeb.CoreComponents do
   ## JS Commands
 
   @doc "Shows a target with the common appearance transition."
-  @spec show(Phoenix.LiveView.JS.t(), String.t()) :: Phoenix.LiveView.JS.t()
+  # LiveView 1.1 constructs public JS structs; its opaque ops type cannot be created here.
+  @spec show(%JS{}, String.t()) :: %JS{}
   def show(js \\ %JS{}, selector) do
     JS.show(js,
       to: selector,
@@ -480,7 +481,8 @@ defmodule NoteyWeb.CoreComponents do
   end
 
   @doc "Hides a target with the common dismissal transition."
-  @spec hide(Phoenix.LiveView.JS.t(), String.t()) :: Phoenix.LiveView.JS.t()
+  # Keep the public struct contract consistent with show/2 and LiveView constructors.
+  @spec hide(%JS{}, String.t()) :: %JS{}
   def hide(js \\ %JS{}, selector) do
     JS.hide(js,
       to: selector,

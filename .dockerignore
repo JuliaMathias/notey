@@ -61,3 +61,6 @@ erl_crash.dump
 *.pem
 *.key
 *.log
+
+# Rebuildable Dialyzer analysis tables; never source or runtime data.
+/.dialyzer/

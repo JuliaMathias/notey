@@ -14,6 +14,11 @@ defmodule Notey.MixProject do
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
+      dialyzer: [
+        plt_local_path: ".dialyzer",
+        plt_core_path: ".dialyzer",
+        plt_add_apps: [:ex_unit]
+      ],
       compilers: [:phoenix_live_view] ++ Mix.compilers(),
       listeners: [Phoenix.CodeReloader]
     ]
@@ -37,6 +42,7 @@ defmodule Notey.MixProject do
     [
       preferred_envs: [
         precommit: :test,
+        dialyzer: :test,
         coveralls: :test,
         "coveralls.html": :test,
         "coveralls.detail": :test,
@@ -72,6 +78,7 @@ defmodule Notey.MixProject do
       {:lazy_html, ">= 0.1.0", only: :test},
       {:excoveralls, "~> 0.18.5", only: :test},
       {:ex_machina, "~> 2.8.2", only: :test},
+      {:dialyxir, "~> 1.4.8", only: [:dev, :test], runtime: false},
       {:castore, "~> 1.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},

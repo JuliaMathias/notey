@@ -24,10 +24,11 @@ Open <http://localhost:4000>. Click **Save connection check**, then reload: the 
 mix format --check-formatted
 mix compile --warnings-as-errors
 mix coveralls.html
+mix dialyzer
 mix assets.build
 ```
 
-Tests use the real local PostgreSQL and roll back their fixtures. Use `mix test` for a run without coverage. `mix coveralls.html` runs the tests with line coverage, enforces the initial 35% minimum and writes `cover/excoveralls.html`. CI saves the report as a downloadable artifact and publishes coverage to Coveralls.io using its GitHub integration. Notey must be enabled in your Coveralls account; see the [setup instructions](docs/testing.md#coverallsio-setup-and-verification). [Testing guidance](docs/testing.md) covers production builds, manual browser checks and evidence. Stop the local database with `docker compose -f compose.dev.yaml stop`; preserve its named volume. `mix ecto.reset` destroys the selected development database, so do not use it against valuable data.
+Tests use the real local PostgreSQL and roll back their fixtures. Use `mix test` for a run without coverage. `mix coveralls.html` runs the tests with line coverage, enforces the initial 35% minimum and writes `cover/excoveralls.html`. CI saves the report as a downloadable artifact and publishes coverage to Coveralls.io using its GitHub integration. Notey must be enabled in your Coveralls account; see the [setup instructions](docs/testing.md#coverallsio-setup-and-verification). Dialyzer checks code/type consistency locally and in CI; its first run builds a reusable analysis cache and takes longer. [Testing guidance](docs/testing.md) covers production builds, manual browser checks and evidence. Stop the local database with `docker compose -f compose.dev.yaml stop`; preserve its named volume. `mix ecto.reset` destroys the selected development database, so do not use it against valuable data.
 
 ## Deployment and ownership
 

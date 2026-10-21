@@ -39,6 +39,15 @@ jobs:
       - run: mix deps.get --check-locked
       - run: mix format --check-formatted
       - run: MIX_ENV=test mix compile --warnings-as-errors
+      - name: Restore Dialyzer analysis cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .dialyzer
+          key: ${{ runner.os }}-otp28.3.1-elixir1.19.5-dialyzer-v1-${{ hashFiles('mix.lock', 'mix.exs') }}
+          restore-keys: |
+            ${{ runner.os }}-otp28.3.1-elixir1.19.5-dialyzer-v1-
+      - name: Dialyzer type analysis
+        run: mix dialyzer --format github
       - name: Tests, coverage minimum and Coveralls.io
         run: mix coveralls.multiple --type html --type github
         env:
