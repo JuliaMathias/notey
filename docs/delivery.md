@@ -61,3 +61,7 @@ Infrastructure companion [PR #12](https://github.com/JuliaMathias/home-server-in
 - NIV follows NAA; NLT is near the end, followed by visual polish. Source PDF availability and full validation remain edition-specific acceptance gates.
 - Upload caps need technical verification. Backup destination is Google Drive; automatic backup expiry must wait for a separate approved retention policy.
 - The current user-approved product choices supersede old proposals in the historical issue draft. The flow is reviewed; remaining Figma amendments are tracked in design-review.md and do not block foundation work.
+
+## PR template adoption — 2026-10-21
+
+The user approved the structured PR template and requested it globally, in Notey and in the AI/infrastructure project. `.github/PULL_REQUEST_TEMPLATE.md` is the repository version, with an explicit manual-testing decision and runnable procedure when needed. Both open PR descriptions use the structure. No implementation sequencing or runtime acceptance gates change: user merges and actual Lara/device verification remain pending.

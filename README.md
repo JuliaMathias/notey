@@ -46,4 +46,4 @@ Notey owns sessions, prompts, workflows, evidence, Bible imports and exports. Sh
 - [Product](docs/product.md), [architecture](docs/architecture.md), [delivery](docs/delivery.md), [testing](docs/testing.md), [deployment](docs/deployment.md).
 - [Design review](docs/design-review.md) contains the Figma link and remaining wireframe feedback. [Issue drafts](docs/issue-drafts.md) are the historical approved planning snapshot; GitHub issues are the implementation backlog.
 
-Use issue branches and signed descriptive commits. Open linked PRs with actual test evidence; the user reviews and merges. Squash merging is preferred. See [AGENTS.md](AGENTS.md).
+Use issue branches and signed descriptive commits. Use the [PR template](.github/PULL_REQUEST_TEMPLATE.md), including an explicit manual-testing decision and instructions when needed. Open linked PRs with actual test evidence; the user reviews and merges. Squash merging is preferred. See [AGENTS.md](AGENTS.md).
