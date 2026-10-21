@@ -26,9 +26,9 @@ Planned evidence uses stable UUID note blocks and source units, immutable extrac
 
 ## ADR 004 — Private access, explicit release and recovery gates
 
-Tailscale-only access is approved; extra application login is deferred. Tailnet membership is an access boundary, not application-level per-user authorization. N20 checks all actual source/result/export routes. N01 uses synthetic data only.
+Tailscale-only access is approved; extra application login is deferred. Tailnet membership is an access boundary, not application-level per-user authorization. N21 checks all actual source/result/export routes. N01 uses synthetic data only.
 
-Automatic rollout after a user merges passing changes is approved, implemented in N22. Initial N01 rollout is manual and must state exact source/image identity, migrations, readiness and persistence checks. Never merge PRs for the user. A rollback image alone cannot reverse arbitrary schema migrations. Use a compatible prior release only when the migration is backward compatible; otherwise stop and follow the issue-specific recovery plan.
+Automatic rollout after a user merges passing changes is approved, implemented in N02. Initial N01 rollout is manual and must state exact source/image identity, migrations, readiness and persistence checks. Never merge PRs for the user. A rollback image alone cannot reverse arbitrary schema migrations. Use a compatible prior release only when the migration is backward compatible; otherwise stop and follow the issue-specific recovery plan.
 
 Google Drive is the approved future backup destination. Encryption, external recovery-key handling and isolated restore evidence remain gates. Backup frequency and expiry are proposals, not approved destructive cleanup. PostgreSQL volumes and source files are runtime state outside Git; no backup/recovery guarantee exists yet.
 
