@@ -43,21 +43,21 @@ Infrastructure companion [PR #12](https://github.com/JuliaMathias/home-server-in
 
 | Milestone | Issues |
 | --- | --- |
-| 01 Foundation and library | [1](https://github.com/JuliaMathias/notey/issues/1) foundation; [2](https://github.com/JuliaMathias/notey/issues/2) sessions; [3](https://github.com/JuliaMathias/notey/issues/3) events; [4](https://github.com/JuliaMathias/notey/issues/4) private assets |
+| 01 Foundation and library | [1](https://github.com/JuliaMathias/notey/issues/1) foundation; [22](https://github.com/JuliaMathias/notey/issues/22) automatic releases/backup recovery (second task); [2](https://github.com/JuliaMathias/notey/issues/2) sessions; [3](https://github.com/JuliaMathias/notey/issues/3) events; [4](https://github.com/JuliaMathias/notey/issues/4) private assets |
 | 02 Recording and source review | [5](https://github.com/JuliaMathias/notey/issues/5) transcription; [6](https://github.com/JuliaMathias/notey/issues/6) audio review; [7](https://github.com/JuliaMathias/notey/issues/7) shared contracts; [8](https://github.com/JuliaMathias/notey/issues/8) typed PDFs; [9](https://github.com/JuliaMathias/notey/issues/9) handwriting/photos |
 | 03 Verified Bible library | [10](https://github.com/JuliaMathias/notey/issues/10) normalized import; [11](https://github.com/JuliaMathias/notey/issues/11) NAA; [12](https://github.com/JuliaMathias/notey/issues/12) NIV; [13](https://github.com/JuliaMathias/notey/issues/13) citations |
 | 04 Integrated notes | [14](https://github.com/JuliaMathias/notey/issues/14) boundaries/speakers; [15](https://github.com/JuliaMathias/notey/issues/15) generation; [16](https://github.com/JuliaMathias/notey/issues/16) editor; [17](https://github.com/JuliaMathias/notey/issues/17) finalization/draft exports |
 | 05 Session and event documents | [18](https://github.com/JuliaMathias/notey/issues/18) session PDF; [19](https://github.com/JuliaMathias/notey/issues/19) event PDF |
-| 06 Private hosting and updates | [20](https://github.com/JuliaMathias/notey/issues/20) access boundary; [21](https://github.com/JuliaMathias/notey/issues/21) persistent app release; [22](https://github.com/JuliaMathias/notey/issues/22) automatic updates/backups |
+| 06 Private hosting and updates | [20](https://github.com/JuliaMathias/notey/issues/20) access boundary; [21](https://github.com/JuliaMathias/notey/issues/21) private-file/job release and backup extensions |
 | 07 Optional enrichment | [23](https://github.com/JuliaMathias/notey/issues/23) opt-in external context |
 | 08 Final editions and visual polish | [24](https://github.com/JuliaMathias/notey/issues/24) NLT; [25](https://github.com/JuliaMathias/notey/issues/25) visual review |
 
 ## Plan adjustments and outstanding boundaries
 
-- N01 includes the first real manual deployment and Tailscale verification. N21 extends deployment for private assets/remote jobs; N22 adds automatic rollout and backup/recovery. This sequencing avoids calling a Dockerfile a deployed app.
+- N01 includes the first real manual deployment and Tailscale verification. N02 / issue #22 is now the second task and adds automatic rollout with foundation backup/recovery. N22 / issue #21 later extends that same pipeline for private assets/remote jobs. This sequencing avoids calling a Dockerfile a deployed app.
 - Keep application and shared ingress PRs separate. Existing Lara port 443 and private AI access must remain intact; Notey uses its own port 8443 ingress. Deployment waits for the user to merge the required PRs.
 - Preserve the unrelated active infrastructure branch/worktree; prepare ingress in a separate worktree.
-- N07 discovers current shared contracts before promising unsupported extraction/generation. Synthetic tests cannot establish model fidelity.
+- N08 discovers current shared contracts before promising unsupported extraction/generation. Synthetic tests cannot establish model fidelity.
 - NIV follows NAA; NLT is near the end, followed by visual polish. Source PDF availability and full validation remain edition-specific acceptance gates.
 - Upload caps need technical verification. Backup destination is Google Drive; automatic backup expiry must wait for a separate approved retention policy.
 - The current user-approved product choices supersede old proposals in the historical issue draft. The flow is reviewed; remaining Figma amendments are tracked in design-review.md and do not block foundation work.
@@ -81,3 +81,11 @@ CI passed for `16cc022` in [run 39640022771](https://github.com/JuliaMathias/not
 ## Dialyzer addition — 2026-10-21
 
 The user requested Dialyzer in N01 / PR #26, inspired by Moolah's CI, and as a default for new Elixir projects in global guidance. Add dev/test-only Dialyxir, a local command selecting the test environment, and a failing-on-findings CI step with separately cached type-analysis tables. Keep generated PLTs outside Git/Docker inputs and production releases. Local analysis passed with 0 errors and 0 skipped findings. A temporary intentional invalid contract produced exit status 2 and a GitHub warning annotation; the probe was removed, then clean analysis passed again. Formatting, 11 PostgreSQL tests (36.2% coverage) and production compilation passed. Latest-head CI remains a separate gate. No sequencing adjustments are needed: this extends foundation validation; Lara deployment and physical-phone acceptance remain separate and pending.
+
+## Approved resequencing — 2026-10-21
+
+Julia requested automatic deployment immediately after task 1, before session features. Task N02 is now [issue #22](https://github.com/JuliaMathias/notey/issues/22), in the first milestone and directly after issue #1 in Project 8. It builds immutable amd64 images in CI and deploys tested user-merged revisions on Lara, with serialized rollout, readiness, migration/recovery checks and foundation database backups. It is planning only; implementation has not started.
+
+GitHub issue numbers/URLs stay stable. Task labels N02–N21 become N03–N22; former N22 becomes N02; N01 and N23–N25 are unchanged. Current issue titles/bodies and active documentation use the new labels. `issue-drafts.md` remains the approved historical snapshot with its original numbering; use GitHub/current delivery docs for implementation order.
+
+Issue #22 now depends on accepted issue #1, not future issues #20/#21. Issue #21 later extends the early pipeline for actual private files and remote jobs and now depends on #22; issue #20 still gates hosted private-data access. Do not block synthetic-foundation automation on features that do not exist yet. Google Drive credentials, encryption/recovery evidence and unapproved backup-expiry retention remain implementation decisions/gates; no paid services or automated deletion are authorized by resequencing. Other feature dependencies are unchanged. N01 still requires its first manual deployment and real device acceptance.

@@ -64,7 +64,7 @@ Use one Figma Design file and three pages: Library & sessions; Processing & revi
 
 ## Delivery sequencing and acceptance
 
-The approved 25 tasks are published in GitHub Project 8; N01 is in progress. See [delivery status](delivery.md) for issue links, dependencies and actual verification gates. The first milestone includes a real manual Lara deployment, not only a Dockerfile; later N21 extends persistent feature deployment and N22 implements updates/backups.
+The approved 25 tasks are published in GitHub Project 8; N01 is in progress. See [delivery status](delivery.md) for issue links, dependencies and actual verification gates. The first milestone includes a real manual Lara deployment, not only a Dockerfile; N02 / issue #22 is the second implementation task for automatic releases and foundation backups; later N22 / issue #21 extends that pipeline for private files and remote jobs.
 
 Validate complete workflows against recordings, personal notes, slide material and exact Bible sources. Automated checks do not establish note fidelity. Phone, laptop and Supernote Manta checks remain necessary for their respective workflows. Private sources and generated outputs stay outside Git.
 
@@ -105,7 +105,7 @@ Confirmed on 2026-10-20: add a dedicated English NIV PDF import profile immediat
 
 Add an NLT profile at the end of the feature sequence, followed by a final visual review/polish task for the application on phone and laptop. Verify NLT source/edition details when supplied. The visual pass should refine the working workflows and exported reading material; feature-level usability and accessibility remain acceptance criteria throughout development.
 
-Plan adjustment: [issue drafts](issue-drafts.md) now contain 25 drafts, with NIV as N12, NLT as N24 and visual review/polish as N25. Independent work can proceed while private source PDFs or validation are pending. No Bible import, Figma mutation or application implementation was performed for this planning revision.
+Plan adjustment: [issue drafts](issue-drafts.md) now contain 25 drafts, with NIV originally labeled N12 (now N13 after resequencing), NLT as N24 and visual review/polish as N25. Independent work can proceed while private source PDFs or validation are pending. No Bible import, Figma mutation or application implementation was performed for this planning revision.
 
 ## Superseded proposals
 

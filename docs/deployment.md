@@ -40,7 +40,7 @@ From the extracted source directory, run:
 
 The script validates configuration/image/network availability, starts/waits for the dedicated database, runs release migrations once, then starts/waits for the app. It does not build images, alter Caddy, reset/drop databases, prune images or remove volumes. A failed migration stops rollout; do not continue by hand or hide the error.
 
-Enable the separately reviewed infrastructure ingress using that PR's runbook after the app is healthy. No automatic rollout exists until N22; this is an explicit manual-rollout exception for the initial foundation. Keep issue #1 open until real deployment/device gates pass.
+Enable the separately reviewed infrastructure ingress using that PR's runbook after the app is healthy. No automatic rollout exists until N02; this is an explicit manual-rollout exception for the initial foundation. Keep issue #1 open until real deployment/device gates pass.
 
 ## Restart, verification and recovery
 
@@ -55,4 +55,4 @@ Follow [testing.md](testing.md) for actual HTTPS/WebSocket, phone-over-cellular 
 
 Before future nontrivial migrations, obtain a consistent recovery point and assess schema compatibility. If an image fails without an incompatible migration, restore the prior recorded image/revision in the private env and run `deploy/apply.sh` again. Do not automatically reverse migrations or delete volumes. For N01's first-ever installation there is no prior app release; stop the Notey web service, preserve PostgreSQL state and investigate. Existing Lara routes and shared AI stay running.
 
-Google Drive backup/restore automation is N22 and not implemented here. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
+Google Drive backup/restore automation is N02 and not implemented here. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
