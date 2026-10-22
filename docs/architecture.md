@@ -30,7 +30,7 @@ Tailscale-only access is approved; extra application login is deferred. Tailnet 
 
 Automatic rollout after a user merges passing changes is approved, implemented in N02. Initial N01 rollout is manual and must state exact source/image identity, migrations, readiness and persistence checks. Never merge PRs for the user. A rollback image alone cannot reverse arbitrary schema migrations. Use a compatible prior release only when the migration is backward compatible; otherwise stop and follow the issue-specific recovery plan.
 
-Google Drive is the approved future backup destination. Encryption, external recovery-key handling and isolated restore evidence remain gates. Backup frequency and expiry are proposals, not approved destructive cleanup. PostgreSQL volumes and source files are runtime state outside Git; no backup/recovery guarantee exists yet.
+Google Drive is the approved backup destination. ADR 005 supersedes the original undecided backup frequency/retention. Live credentials, external recovery-key handling and isolated off-host restore remain activation gates. PostgreSQL volumes and source files are runtime state outside Git; no live backup/recovery guarantee exists yet.
 
 ## ADR 005 — Reuse the versioned Lara delivery mechanism
 
@@ -67,6 +67,23 @@ key setup, installed timers, actual release and Drive restore acceptance remain
 pending; approved design is not execution evidence. ADR 005 supersedes ADR 004's
 undecided transport/retention language while retaining its private-access and
 migration safeguards.
+
+Implementation follow-up, 2026-10-22: CI packages and tests an amd64 image once;
+the main-only publisher and Lara independently require exact user-merged source
+and successful CI. Repository release immutability is enabled. The shared runner
+holds failed/interrupted migrations for operator recovery; it never assumes an
+old image reverses schema changes. Notey's adapter preserves the dedicated DB
+image/volume and rejects host publication, privilege and source-build recipes.
+Before migration it pauses only web and requires a verified encrypted off-host
+backup. Daily database dumps remain online/transactionally consistent.
+
+Expired backups move to Drive Trash only, per Julia's 2026-10-22 approval; no
+permanent deletion or Trash emptying is implemented. Deployment and expiry both
+require recorded external-key restore evidence bound to the current recipient.
+Credentials, key custody and actual live recovery remain unrun. The initial
+installation is an explicit manual exception after both user merges; see the
+[operations runbook](release-operations.md). Future app adoption and mechanism
+upgrades require explicit app configuration and pinned versions.
 
 ## Sources and compatibility
 

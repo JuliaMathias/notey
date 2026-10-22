@@ -1,5 +1,36 @@
 # Testing and evidence
 
+## N02 release and recovery checks
+
+Run `python3 -m unittest discover -s deploy -p 'test_*.py' -v` for deterministic
+archive and adapter tests. Opt-in Docker/DB integration tests are skipped unless
+their explicit environment variables are supplied; skipped checks are not passes.
+Use [release-operations.md](release-operations.md) for setup, live Drive recovery,
+first automatic rollout, laptop behavior and preservation gates. The maintained
+[backup test](backup-format.md#runnable-local-verification) restores a real local
+PostgreSQL dump after a destructive column change.
+
+The optional actual image exercise requires a downloaded CI `release-package`,
+the existing local `notey:foundation-review` image, and reviewed installed shared
+runtime tools (not an infrastructure development checkout). Set
+`NOTEY_RELEASE_TEST_PACKAGE=/PRIVATE/package` and
+`NOTEY_MECHANISM_TEST_DIR=/PRIVATE/tools`, then run
+`python3 -m unittest discover -s deploy -p test_release_integration.py -v`.
+It creates random `notey-n02-test-*` projects/networks/volumes, uses synthetic
+credentials/data, and removes only those resources. It tests real image loading,
+migrations, activation, persistence, failed readiness, a dropped-column query
+failure and dump restoration into a new isolated database. The Mac emulation fixture adds OTP’s documented `+JMsingle true` JIT option
+through a temporary Compose override; the published recipe/Lara are unchanged.
+Storage and the failure injection are faked. Local container HTTP does not establish Lara HTTPS
+or WebSocket behavior. No ordinary test contacts Google/GitHub/Lara.
+
+Execution on 2026-10-22: the two actual Docker exercises passed using the CI
+39735572645 package; successful update preserved the exact UUID and failed
+readiness held recovery, with the pre-migration dump restoring the dropped
+column/UUID into a new database. The separate PostgreSQL archive test passed.
+Current ordinary suite: 14 deterministic passes, three explicit integration
+skips. Live credentials, Drive recovery and Lara browser/timers remain unrun.
+
 N02's separate [backup-format checks](backup-format.md#runnable-local-verification)
 cover archive integrity and an opt-in real local PostgreSQL restore, including a
 destructive schema change that image rollback alone cannot recover. They do not

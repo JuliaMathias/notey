@@ -1,6 +1,11 @@
-# Initial manual deployment on Lara
+# Deployment on Lara
 
 ## N02 reusable automation direction
+
+Use [release-operations.md](release-operations.md) for the implemented adapter,
+dedicated OAuth/key setup, manual post-merge bootstrap and migration recovery.
+Immutable releases and the CI confirmation variable were enabled with Julia's
+approval on 2026-10-22. Neither timers nor live backup expiry are active.
 
 The CI workflow now builds an amd64 image after application checks, exercises
 the actual packaged image with migrations/readiness/restart persistence on an
@@ -104,7 +109,7 @@ Follow [testing.md](testing.md) for actual HTTPS/WebSocket, phone-over-cellular 
 
 Before future nontrivial migrations, obtain a consistent recovery point and assess schema compatibility. If an image fails without an incompatible migration, restore the prior recorded image/revision in the private env and run `deploy/apply.sh` again. Do not automatically reverse migrations or delete volumes. For N01's first-ever installation there is no prior app release; stop the Notey web service, preserve PostgreSQL state and investigate. Existing Lara routes and shared AI stay running.
 
-Google Drive backup/restore automation is N02 and not implemented here. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
+Google Drive backup/restore automation is implemented by N02's companion mechanism, with live authorization and external-key restore still pending. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
 
 ## Deployed release — 2026-10-21
 

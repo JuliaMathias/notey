@@ -100,49 +100,52 @@ Issue #22 now depends on accepted issue #1, not future issues #20/#21. Issue #21
 
 N01 is deployed and runtime accepted. No further sequencing adjustment is needed: N02 / issue #22 is next. This documentation records the deployed application without implementing automatic deployment. PR #29 was user-merged at `c27241d`; it did not need another runtime rollout. Julia should start a new chat using this document and the next issue as the handoff. Agent-created synthetic records were removed; the unidentified phone record was preserved.
 
-## N02 — Backup contract implemented; reusable delivery in progress
+## N02 — Implemented for review; live setup and acceptance pending
 
-Verified on 2026-10-21: PR #29 is user-merged at `c27241d`; N01 is accepted.
-Issue [#22](https://github.com/JuliaMathias/notey/issues/22) is the current task,
-on `codex/issue-22-tested-releases`. The unrelated untracked `CLAUDE.md` is preserved.
+PR #29 was verified user-merged at `c27241d`; N01 remains runtime accepted.
+Application PR [#30](https://github.com/JuliaMathias/notey/pull/30) implements CI
+image testing/publication, the Notey adapter and bootstrap/recovery tools.
+Companion infrastructure PR [#18](https://github.com/JuliaMathias/home-server-infra/pull/18)
+implements versioned pull delivery, per-app locking/status, public-key encryption,
+verified Drive transfer, retention and inert opt-in systemd timers. Infrastructure
+implementation is on Lara in tmux `notey-n02`, app development on this Mac.
 
-The first focused increment implements a versioned archive/manifest with source,
-image and payload checksums, rejects unsafe/corrupt contents and refuses restore
-overwrite. Six deterministic tests and an isolated real PostgreSQL 17 dump/restore
-passed locally, including recovery of a dropped column and synthetic source file.
-See [backup format and test procedure](backup-format.md). This establishes the
-foundation recovery contract, not live backups or automatic deployment.
+Approved policies: pull deployment; backup before each deployment plus daily;
+retain all successful verified backups within five days AND at least newest 30
+regardless of age; expired objects move to Drive Trash only. No permanent deletion
+or Trash emptying. The external recovery key belongs in Julia's password manager
+plus a protected offline copy. Future apps explicitly adopt the common mechanism
+with their own adapters, pinned version, paths, secrets, destinations and policies.
 
-Approved on 2026-10-21: backups before each deployment plus daily. Keep every
-backup from the last five days and at least the newest 30 backups regardless of
-age. A backup is eligible for expiry only when it is both older than five days
-and outside the newest 30. Failed/incomplete backups must not displace successful
-recovery points. No expiry mechanism has been implemented or enabled.
+On 2026-10-22 Julia approved immutable GitHub releases. The repository setting
+and `NOTEY_IMMUTABLE_RELEASES_CONFIRMED=true` were enabled and verified. No live
+OAuth credentials, recovery key, timer activation or backup expiry were installed.
+The dedicated OAuth and exact post-merge bootstrap/restore procedures are in
+[release-operations.md](release-operations.md). Initial activation is a manual
+rollout exception; subsequent passing user merges become eligible automatically.
 
-Approved on 2026-10-21: Lara-side pull deployment; public-key encryption with
-Julia’s recovery key stored in her password manager and a protected offline copy.
-Julia also requested a reusable workflow for future Lara apps, with per-app policy
-parameters and onboarding documentation. Shared mechanisms belong to companion
-[home-server-infra#17](https://github.com/JuliaMathias/home-server-infra/issues/17),
-developed on Lara in tmux session `notey-n02`; Notey integration stays on this Mac.
-Live repository/Drive credentials and recovery-key setup remain pending. The
-five-minute checking interval is a proposed reversible operating setting.
+Evidence: infrastructure head `9e3ba00` passes [CI 39738347727](https://github.com/JuliaMathias/home-server-infra/actions/runs/39738347727)
+with 40 deterministic tests (one optional crypto test skipped). Actual synthetic
+GnuPG encryption/public-only keyring/external-key decryption passed separately
+using fake storage. Notey CI [39735572645](https://github.com/JuliaMathias/notey/actions/runs/39735572645)
+on `cbdb595` passed application tests, Dialyzer, assets/release and actual amd64
+image migration/readiness/restart persistence; PR publication correctly skipped.
+A real local PostgreSQL dropped-column recovery test passed again on 2026-10-22.
+Two actual local Docker exercises passed with that CI image: successful update
+preserved the synthetic UUID; injected failed readiness held recovery, and a
+pre-migration dump restored the dropped column/UUID into a new database. Storage
+was fake; local ARM emulation needed the documented test-only OTP JIT override.
+Latest adapter-head CI remains required; prior CI does not substitute for it.
 
-Remaining acceptance gates: CI/image publication and identity verification;
-merged-only/passing-CI selection and serialization; pre-migration encrypted backup;
-successful and failed-health update exercises; safe migration recovery; real Drive
-upload/download and external-key restore; live laptop HTTPS/WebSocket/data checks;
-preserved existing ingress and shared AI state. Infrastructure guidance and
-policy code are being prepared in the separate issue #17 worktree; no live
-infrastructure configuration or runtime deployment has changed. Provisioning belongs
-in a separately reviewed owning-repository PR.
+Open live acceptance gates: dedicated Google authorization/key custody; verified
+Drive upload/download and external-key database restore; first immutable published
+main release; user-merged infrastructure installation and Notey activation;
+automatic exact-image deployment; laptop HTTPS/WebSocket/data checks and preserved
+existing ingress/AI state. No updater or expiry is active on Lara. Do not close
+#22 or #17 from PR merge or deterministic tests alone. Non-closing issue references
+are deliberate; no closing Development association is claimed.
 
 Plan review: no feature-sequence adjustment is needed. N02 remains before session
-features; #21 later extends file/job consistency and #20 gates private asset access.
-Do not mark issue #22 accepted or close it from this contract-only increment.
-
-Companion verification so far: 13 deterministic infrastructure policy tests passed
-on Lara without contacting Docker, Drive, GitHub or AI services. The shared
-runner/adapters and runtime acceptance gates remain incomplete. Notey local
-formatting, 11 application tests (36.2% coverage) and Dialyzer passed separately.
-Latest-head CI remains required after the branch is pushed.
+features; #21 extends actual file/job consistency and #20 gates hosted private
+assets. The initial automation remains synthetic foundation scope. The unrelated
+untracked `CLAUDE.md` is preserved.

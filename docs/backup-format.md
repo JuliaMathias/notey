@@ -69,3 +69,12 @@ not encrypted Drive recovery or a Lara rollout/restore result.
 
 Sources: [PostgreSQL pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html),
 [PostgreSQL pg_restore](https://www.postgresql.org/docs/17/app-pgrestore.html).
+
+## Operator recovery command
+
+After external-key decryption, run `python3 deploy/backup_archive.py verify /PRIVATE/snapshot.tar`
+or `python3 deploy/backup_archive.py unpack /PRIVATE/snapshot.tar /PRIVATE/NEW-restore-directory`.
+Unpack verifies before writing and refuses an existing destination. The ordinary
+archive suite now has seven passing tests, including the exact CLI and overwrite
+refusal. [Release operations](release-operations.md) documents Drive authorization,
+key custody and isolated database restore; those live gates remain separate.
