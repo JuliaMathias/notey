@@ -101,15 +101,25 @@ Use factories to establish starting data, then call the application operation un
 
 Julia confirmed Notey is enabled in her Coveralls account on 2026-10-21. Real publication was verified for `16cc022`: [Coveralls build 82509820](https://coveralls.io/builds/82509820) identifies PR #26 and the correct branch/commit, with 66 of 182 relevant lines covered (36.26%). ExCoveralls truncates its local display to 36.2%; the underlying covered/total counts agree. Keep this check separate from local tests.
 
-1. If setting up again, sign in to the existing [Coveralls account](https://coveralls.io/) and add/enable `JuliaMathias/notey`. The repository is private; confirm the account supports private-repository coverage. [Current pricing](https://coveralls.io/pricing) lists paid private-repository plans. Do not start a subscription/trial, enter payment information or change repository visibility as an incidental setup step.
+1. If setting up again, sign in to the existing [Coveralls account](https://coveralls.io/) and add/enable `JuliaMathias/notey`. GitHub visibility was verified as public on 2026-10-22; the earlier private-repository description was incorrect. Verify actual visibility when setting up another project; do not change visibility or start a subscription/trial as an incidental integration step.
 2. Complete any GitHub authorization/selected-repository setup requested by Coveralls. This account step belongs to Julia. Do not paste credentials or tokens into chat or Git. The configured ExCoveralls GitHub mode uses `${{ secrets.GITHUB_TOKEN }}` from the Actions run, not a new repository token in source.
-3. Re-run the PR's CI workflow or push the next reviewed commit. Expect 11 passing tests, a coverage percentage above the tracked minimum, an HTML artifact, and ExCoveralls' explicit successful-upload message.
-4. In Coveralls, verify the new build belongs to `JuliaMathias/notey`, matches the CI commit/PR and shows the expected source files/line coverage. Record the build URL and result in PR #26. Enabling the repository alone is not evidence of a successful report.
-5. If registration/authorization fails, fix the account setup and rerun; keep that failure visible. ExCoveralls 0.18.5 treats some timeouts/maintenance errors as nonfatal, so a green CI job alone is not proof that Coveralls accepted a report. Preserve the local minimum/report check and record remote publication as blocked/unverified until an actual report is confirmed.
+3. In [Coveralls repository settings](https://coveralls.io/github/JuliaMathias/notey/settings), enable **LEAVE PR COMMENTS?**, select **detailed** format and save. Keep status updates enabled. Reopen settings to verify persistence. Comments and commit statuses are independent notifications; creating a new PR or having an earlier baseline does not enable comments. Investigate account permissions if posting fails; do not silently grant broader repository access.
+4. Re-run the PR's CI workflow or push the next reviewed commit. Expect passing application tests, coverage above the tracked minimum, an HTML artifact, and ExCoveralls' explicit successful-upload message.
+5. In Coveralls, verify the new build belongs to `JuliaMathias/notey`, matches the CI commit/PR and shows the expected source files/line coverage. Separately verify a real Coveralls coverage comment appears on that GitHub PR, and record the build/comment links in the current PR. Enabling the repository or seeing a green coverage status alone is not evidence that comments work.
+6. If registration/authorization/comment posting fails, fix the relevant setup and rerun; keep that failure visible. ExCoveralls 0.18.5 treats some timeouts/maintenance errors as nonfatal, so a green CI job alone is not proof that Coveralls accepted a report. Preserve the local minimum/report check and record remote publication/comment delivery as blocked/unverified until actually confirmed.
+
+On 2026-10-22, PR #30 had a successful published report/status but no comments.
+The signed-in Coveralls settings showed comments disabled. Julia authorized
+enabling them; **LEAVE PR COMMENTS** is now enabled with **detailed** format,
+verified by reopening the saved settings. The next PR coverage run must also
+establish actual comment delivery; the setting alone is not delivery evidence.
+This changes notification setup, not runtime behavior, release sequencing or
+the separate N02 Drive/recovery acceptance gates. ExCoveralls measures Elixir
+application coverage; the Python delivery tests are not included in that figure.
 
 Local `mix test` and `mix coveralls.html` never upload to Coveralls. CI's external integration is intentional and authorized; its report includes tracked application source text and coverage, not private recordings/notes/Bible data. No production behavior changes and no additional phone test are needed for these test tools. Existing N01 deployment/device checks still apply.
 
-Sources: [ExMachina](https://ex-machina.hexdocs.pm/readme.html), [ExCoveralls GitHub integration](https://excoveralls.hexdocs.pm/readme.html#mix-coveralls-github-post-coverage-from-github-actions), and the installed ExCoveralls 0.18.5 `Mix.Tasks.Coveralls.Multiple` implementation (one run, multiple report types).
+Sources: [ExMachina](https://ex-machina.hexdocs.pm/readme.html), [ExCoveralls GitHub integration](https://excoveralls.hexdocs.pm/readme.html#mix-coveralls-github-post-coverage-from-github-actions), [Coveralls notification settings](https://docs.coveralls.io/app-notifications), and the installed ExCoveralls 0.18.5 `Mix.Tasks.Coveralls.Multiple` implementation (one run, multiple report types).
 
 ## N01 browser and deployed acceptance procedure
 
