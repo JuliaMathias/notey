@@ -1,4 +1,50 @@
-# Initial manual deployment on Lara
+# Deployment on Lara
+
+## N02 reusable automation direction
+
+Use [release-operations.md](release-operations.md) for the implemented adapter,
+dedicated OAuth/key setup, manual post-merge bootstrap and migration recovery.
+Immutable releases and the CI confirmation variable were enabled with Julia's
+approval on 2026-10-22. Neither timers nor live backup expiry are active.
+
+The CI workflow now builds an amd64 image after application checks, exercises
+the actual packaged image with migrations/readiness/restart persistence on an
+isolated GitHub-hosted runner, and saves its image ID plus archive/recipe hashes.
+PR runs can build/test the package but cannot publish it. A separate main-push
+job requires a human-merged PR for that exact revision and publishes the same
+tested package as `release-<full SHA>` without rebuilding it. All assets are
+uploaded to a draft before publication. CI never contacts Lara or merges PRs.
+
+Publication requires repository variable `NOTEY_IMMUTABLE_RELEASES_CONFIRMED=true`,
+set only after an operator verifies the immutable-release setting. GitHub's normal
+Actions token cannot read repository-administration settings, so the job checks
+the actual published release's `immutable` flag and Lara checks it independently.
+A disabled/missing gate or failed/unverified release prevents automatic rollout.
+Initial installation and live recovery remain separate gates below.
+
+N02 / issue #22 now uses an approved Lara-side pull design. The shared versioned
+mechanism is owned by [home-server-infra#17](https://github.com/JuliaMathias/home-server-infra/issues/17),
+with its reusable onboarding/configuration guide in that repository's
+`docs/app-delivery.md`. Notey supplies its application-specific release, database,
+readiness and recovery configuration. See [ADR 005](architecture.md#adr-005--reuse-the-versioned-lara-delivery-mechanism).
+
+Application development stays in this Mac repository. Infrastructure development
+uses `/srv/lara/worktrees/infra-app-delivery` on Lara, in tmux session `notey-n02`:
+
+```sh
+ssh -t lara 'tmux attach -t notey-n02'
+```
+
+Notey backups are approved before deployment plus daily, preserving all successful
+backups from the last five days and at least the newest 30 regardless of age.
+Public-key encryption uses Julia's recovery key held in her password manager and
+a protected offline copy, outside Lara. Each future app must explicitly choose
+its own policy and isolated credentials/state. Neither this policy nor the local
+[backup-format checks](backup-format.md) activates timers or establishes live
+Drive recovery. Existing N01 deployment instructions below remain the current
+runtime recipe until N02 is merged, installed and actually verified.
+
+## N01 manual recipe and evidence
 
 N01 deploys an empty/synthetic foundation. Develop on the Mac. Use an immutable archive of a reviewed revision for deployment, not an editable application development checkout on Lara. The first rollout is active; Julia reported the physical-phone acceptance procedure passed on 2026-10-21. See [delivery status](delivery.md).
 
@@ -63,7 +109,7 @@ Follow [testing.md](testing.md) for actual HTTPS/WebSocket, phone-over-cellular 
 
 Before future nontrivial migrations, obtain a consistent recovery point and assess schema compatibility. If an image fails without an incompatible migration, restore the prior recorded image/revision in the private env and run `deploy/apply.sh` again. Do not automatically reverse migrations or delete volumes. For N01's first-ever installation there is no prior app release; stop the Notey web service, preserve PostgreSQL state and investigate. Existing Lara routes and shared AI stay running.
 
-Google Drive backup/restore automation is N02 and not implemented here. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
+Google Drive backup/restore automation is implemented by N02's companion mechanism, with live authorization and external-key restore still pending. A Docker volume surviving restart is persistence, not a verified off-host backup. Never run `docker compose down -v`, `volume prune`, `ecto.reset` or secret regeneration against an existing database as an update procedure.
 
 ## Deployed release — 2026-10-21
 

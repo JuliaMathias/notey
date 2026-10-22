@@ -6,7 +6,7 @@ A personal study workspace combining recordings, personal notes, slides and veri
 
 Task [N01 / #1](https://github.com/JuliaMathias/notey/issues/1) establishes the foundation. The app currently has a minimal LiveView page that persists a synthetic UUID record in PostgreSQL, plus a database readiness endpoint. Session uploads, AI processing, Bible imports and finished-note workflows are not implemented.
 
-The foundation is deployed at [Notey on Lara](https://lara.taila21247.ts.net:8443), accessible through Tailscale. Merged-main CI passed with 11 PostgreSQL tests, coverage and Dialyzer checks, assets and a production release. On 2026-10-21, laptop HTTPS, live save/reload and persistence across a Lara app/database restart passed. Julia reported the physical-phone cellular/Tailscale procedure passed on 2026-10-21; N01 runtime acceptance is complete. The final evidence documentation remains in PR #29 for review. See [delivery status](docs/delivery.md). The approved 25 tasks are published in [GitHub Project 8](https://github.com/users/JuliaMathias/projects/8).
+The foundation is deployed at [Notey on Lara](https://lara.taila21247.ts.net:8443), accessible through Tailscale. Merged-main CI passed with 11 PostgreSQL tests, coverage and Dialyzer checks, assets and a production release. On 2026-10-21, laptop HTTPS, live save/reload and persistence across a Lara app/database restart passed. Julia reported the physical-phone cellular/Tailscale procedure passed on 2026-10-21; N01 runtime acceptance is complete. The final evidence documentation was user-merged in PR #29 (`c27241d`). See [delivery status](docs/delivery.md). The approved 25 tasks are published in [GitHub Project 8](https://github.com/users/JuliaMathias/projects/8).
 
 ## Local setup
 
@@ -32,7 +32,7 @@ Tests use the real local PostgreSQL and roll back their fixtures. Use `mix test`
 
 ## Deployment and ownership
 
-Develop on this Mac. Lara hosts separately deployed applications and shared infrastructure. [Deployment instructions](docs/deployment.md) describe the release, dedicated PostgreSQL, migrations, restart and active Tailscale ingress at `https://lara.taila21247.ts.net:8443`. No automatic deployment exists yet; N02 adds it after a user merge, never automatic PR merging.
+Develop on this Mac. Lara hosts separately deployed applications and shared infrastructure. [Deployment instructions](docs/deployment.md) describe the release, dedicated PostgreSQL, migrations, restart and active Tailscale ingress at `https://lara.taila21247.ts.net:8443`. N02 / issue #22 implements tested immutable CI packages, a Notey deployment adapter and the companion versioned infrastructure runner. The [release operations guide](docs/release-operations.md) covers dedicated OAuth setup, external recovery keys, bootstrap, backups and migration recovery. Implementation is prepared for review; live credentials, recovery proof and post-merge activation remain pending. Automatic deployment is not active yet; the workflow never merges PRs.
 
 Notey owns sessions, prompts, workflows, evidence, Bible imports and exports. Shared AI services own domain-neutral inference/extraction. Keep credentials, model weights, runtime databases, original recordings/notebooks, Bible text and generated private notes outside Git and release images. Git stores recipes, code, migrations and synthetic fixtures; it is not a backup of application data.
 

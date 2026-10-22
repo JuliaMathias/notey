@@ -1,0 +1,27 @@
+{
+  "contract": 1,
+  "app": "notey",
+  "repository": "JuliaMathias/notey",
+  "workflow": ".github/workflows/ci.yml",
+  "project": "notey",
+  "proxy_network": "lara-proxy",
+  "runtime_env": "/srv/lara/apps/notey/.env",
+  "health_url": "https://lara.taila21247.ts.net:8443/health",
+  "state_dir": "/srv/lara/apps/notey/delivery/state",
+  "github_token_file": "/srv/lara/apps/notey/delivery/github.token",
+  "mechanism_dir": "/srv/lara/app-delivery/REVIEWED_INFRA_SHA/delivery/v1",
+  "adapter": ["/usr/bin/python3", "/srv/lara/apps/notey/delivery/adapter/REVIEWED_APP_SHA/delivery_adapter.py"],
+  "backup": {
+    "credential_file": "/srv/lara/apps/notey/delivery/drive.json",
+    "scratch_dir": "/srv/lara/apps/notey/delivery/scratch",
+    "public_keyring": "/srv/lara/apps/notey/delivery/public-keyring",
+    "recipient_fingerprint": "REPLACE_WITH_VERIFIED_PUBLIC_KEY_FINGERPRINT",
+    "minimum_count": 30,
+    "minimum_days": 5,
+    "expiry_enabled": false,
+    "recovery_verified_at": null,
+    "recovery_verified_for": "",
+    "recovery_backup_id": "",
+    "protected_backup_ids": []
+  }
+}
