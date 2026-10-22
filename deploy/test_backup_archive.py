@@ -2,6 +2,8 @@
 
 import io
 from pathlib import Path
+import subprocess
+import sys
 import tarfile
 import tempfile
 import unittest
@@ -49,6 +51,17 @@ class BackupArchiveTest(unittest.TestCase):
         self.assertEqual(self.archive.read_bytes(), original)
         with self.assertRaises(FileExistsError):
             backup_archive.unpack(self.archive, self.root)
+
+    def test_operator_cli_verifies_before_unpacking_and_refuses_overwrite(self):
+        """The runbook's actual command restores bytes once and preserves them."""
+        self.create()
+        command = [sys.executable, backup_archive.__file__, "unpack", str(self.archive),
+                   str(self.root / "cli-restore")]
+        subprocess.run(command, capture_output=True, check=True)
+        restored = self.root / "cli-restore/database.dump"
+        self.assertEqual(restored.read_bytes(), self.dump.read_bytes())
+        self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
+        self.assertEqual(restored.read_bytes(), self.dump.read_bytes())
 
     def test_changed_dump_is_rejected_before_restore_directory_is_created(self):
         """A damaged member must fail integrity checks before writing files."""

@@ -116,3 +116,20 @@ def unpack(path, destination):
                 while chunk := source.read(1024 * 1024):
                     output.write(chunk)
     return manifest
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Verify or unpack a decrypted Notey backup into a new directory")
+    parser.add_argument("operation", choices=["verify", "unpack"])
+    parser.add_argument("archive")
+    parser.add_argument("destination", nargs="?")
+    args = parser.parse_args()
+    if args.operation == "unpack":
+        if not args.destination:
+            parser.error("unpack requires a new destination directory")
+        result = unpack(args.archive, args.destination)
+    else:
+        result = verify(args.archive)
+    print("Verified Notey backup for source revision " + result["revision"])
