@@ -7,7 +7,7 @@ permissions:
   contents: read
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Backup archive contract (synthetic, no remote services)
-        run: python3 -m unittest discover -s deploy -p 'test_backup_archive.py' -v
+        run: python3 -m unittest discover -s deploy -p 'test_*.py' -v
       - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1
         with:
           otp-version: '28.3.1'
@@ -67,3 +67,74 @@ jobs:
       - run: MIX_ENV=prod mix compile --warnings-as-errors
       - run: MIX_ENV=prod mix assets.deploy
       - run: MIX_ENV=prod mix release
+  package:
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Build the amd64 release image once
+        run: >-
+          docker build --platform linux/amd64
+          --label "org.opencontainers.image.revision=$GITHUB_SHA"
+          --tag "notey:$GITHUB_SHA" .
+      - name: Exercise the actual release image and restart persistence
+        run: bash deploy/ci-image-check.sh
+      - name: Package the tested image
+        run: python3 deploy/package.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-package
+          path: release-package/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+  publish:
+    needs: [test, package]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      IMMUTABILITY_CONFIRMED: ${{ vars.NOTEY_IMMUTABLE_RELEASES_CONFIRMED }}
+    steps:
+      - name: Require a human-merged PR and immutable release setting
+        shell: bash
+        run: |
+          set -euo pipefail
+          # GITHUB_TOKEN has no repository-administration permission. An operator
+          # verifies the setting during bootstrap; publication also checks the
+          # actual immutable flag below, and Lara independently requires it.
+          test "$IMMUTABILITY_CONFIRMED" = true
+          gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls?per_page=100" > prs.json
+          python3 - <<'PY'
+          import json, os, subprocess
+          valid = False
+          for item in json.load(open('prs.json')):
+              if item.get('merge_commit_sha') != os.environ['GITHUB_SHA']:
+                  continue
+              pr = json.loads(subprocess.check_output(['gh', 'api', 'repos/' + os.environ['GITHUB_REPOSITORY'] + '/pulls/' + str(item['number'])]))
+              valid |= bool(pr.get('merged_at') and pr.get('merge_commit_sha') == os.environ['GITHUB_SHA']
+                            and pr['base']['ref'] == 'main' and pr['base']['repo']['full_name'] == os.environ['GITHUB_REPOSITORY']
+                            and (pr.get('merged_by') or {}).get('type') == 'User')
+          if not valid:
+              raise SystemExit('Publication requires a human-merged PR for this exact main revision')
+          PY
+      - name: Download the tested package without rebuilding
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name release-package --dir release-package
+      - name: Publish all assets together as an immutable release
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="release-$GITHUB_SHA"
+          gh release create "$tag" release-package/image.tar.gz release-package/compose.yaml release-package/release.json \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --draft \
+            --title "Notey $GITHUB_SHA" --notes "Tested CI run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" --jq '.immutable' | grep -qx true

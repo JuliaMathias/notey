@@ -2,6 +2,21 @@
 
 ## N02 reusable automation direction
 
+The CI workflow now builds an amd64 image after application checks, exercises
+the actual packaged image with migrations/readiness/restart persistence on an
+isolated GitHub-hosted runner, and saves its image ID plus archive/recipe hashes.
+PR runs can build/test the package but cannot publish it. A separate main-push
+job requires a human-merged PR for that exact revision and publishes the same
+tested package as `release-<full SHA>` without rebuilding it. All assets are
+uploaded to a draft before publication. CI never contacts Lara or merges PRs.
+
+Publication requires repository variable `NOTEY_IMMUTABLE_RELEASES_CONFIRMED=true`,
+set only after an operator verifies the immutable-release setting. GitHub's normal
+Actions token cannot read repository-administration settings, so the job checks
+the actual published release's `immutable` flag and Lara checks it independently.
+A disabled/missing gate or failed/unverified release prevents automatic rollout.
+Initial installation and live recovery remain separate gates below.
+
 N02 / issue #22 now uses an approved Lara-side pull design. The shared versioned
 mechanism is owned by [home-server-infra#17](https://github.com/JuliaMathias/home-server-infra/issues/17),
 with its reusable onboarding/configuration guide in that repository's
